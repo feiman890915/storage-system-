@@ -434,16 +434,10 @@ const GITEE_REPO = 'fei890915/storage-system';
 
 async function saveToGitee(name, data) {
   try {
-    const ts = Date.now();
-    const filename = 'sub_' + ts + '_' + name.replace(/[^\w一-龥]/g,'_').slice(0,30) + '.json';
-    const json = JSON.stringify(data);
-    const content = btoa(unescape(encodeURIComponent(json)));
-    const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + encodeURIComponent(filename), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ access_token: GITEE_TOKEN, content: content, message: '客户提交: ' + name })
-    });
-    if (!res.ok) console.warn('Gitee save error:', res.status);
+    const fn = 'sub_' + Date.now() + '_' + name.replace(/[^\w一-龥]/g,'_').slice(0,30) + '.json';
+    const body = JSON.stringify({ access_token: GITEE_TOKEN, content: btoa(unescape(encodeURIComponent(JSON.stringify(data)))), message: '客户提交: ' + name });
+    const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + encodeURIComponent(fn) + '?access_token=' + GITEE_TOKEN, { method: 'POST', body: body });
+    if (!res.ok) console.warn('Gitee save error:', res.status + ' ' + (await res.text().catch(()=>'')));
   } catch(e) { console.warn('Gitee save error:', e) }
 }
 </script>
