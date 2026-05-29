@@ -435,11 +435,10 @@ const GITEE_REPO = 'fei890915/storage-system';
 async function saveToGitee(name, data) {
   try {
     const ts = Date.now();
-    const safeName = name.replace(/[^\w一-龥]/g,'_');
-    const filename = 'sub_' + ts + '_' + safeName + '.json';
+    const filename = 'sub_' + ts + '_' + name.replace(/[^\w\s]/g,'').trim().slice(0,20) + '.json';
     const json = JSON.stringify(data);
     const content = btoa(unescape(encodeURIComponent(json)));
-    const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + filename, {
+    const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + encodeURIComponent(filename), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ access_token: GITEE_TOKEN, content: content, message: '客户提交: ' + name })
