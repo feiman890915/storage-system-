@@ -431,7 +431,7 @@ async function saveToGitee(name, data) {
   try {
     const ts = Date.now();
     const safeName = name.replace(/[^\w一-龥]/g,'_');
-    const filename = 'data/' + ts + '_' + safeName + '.json';
+    const filename = 'sub_' + ts + '_' + safeName + '.json';
     const json = JSON.stringify(data);
     const content = btoa(unescape(encodeURIComponent(json)));
     const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + filename, {

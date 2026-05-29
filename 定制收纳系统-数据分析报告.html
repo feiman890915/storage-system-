@@ -277,7 +277,7 @@ section{margin-bottom:20px}
 // ===== Gitee API (国内数据存储) =====
 const GITEE_TOKEN = 'da49344488b843dc9927afa3bf169503';
 const GITEE_REPO = 'fei890915/storage-system';
-const GITEE_API = 'https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/data';
+const GITEE_API = 'https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents';
 
 const DATA_KEY = 'storage_survey_latest';
 let data = null;
@@ -298,10 +298,11 @@ async function fetchGiteeList() {
   try {
     const res = await fetch(GITEE_API + '?access_token=' + GITEE_TOKEN);
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const files = await res.json();
+    const all = await res.json();
     document.getElementById('loadingView').style.display = 'none';
-    if (files && files.length > 0) {
-      // Sort by name (desc = newest first)
+    // Filter only submission files
+    const files = (all||[]).filter(f => f.name && f.name.startsWith('sub_'));
+    if (files.length > 0) {
       files.sort((a,b) => b.name.localeCompare(a.name));
       showClientList(files);
     } else {
