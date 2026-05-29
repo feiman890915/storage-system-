@@ -147,6 +147,7 @@ input:focus{border-color:#C4956A;background:#fff;box-shadow:0 0 0 3px rgba(196,1
 @keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -1628,6 +1629,14 @@ function submitForm(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='收纳数据_'+nm+'.xlsx';a.click();
 
+  // Save to Supabase
+  try {
+    supabase.from('submissions').insert({
+      client_name: nm,
+      data: reportData
+    }).then();
+  } catch(e) {}
+
   // Show thank you
   document.querySelectorAll('section[id^="sec-"]').forEach(s=>{s.style.display='none'});
   document.getElementById('topBar').classList.remove('show');
@@ -1636,6 +1645,11 @@ function submitForm(){
 
 // ===== Init =====
 initDots();
+
+// ===== Supabase =====
+const SUPABASE_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 </script>
 </body>
 </html>

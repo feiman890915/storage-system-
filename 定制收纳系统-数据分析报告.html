@@ -129,6 +129,9 @@ section{margin-bottom:20px}
 
   <!-- Report Sections -->
   <div id="sections" style="display:none">
+    <div class="no-print" style="text-align:center;margin-bottom:12px">
+      <button onclick="backToList()" style="background:none;border:none;color:#8B6B4A;font-size:13px;cursor:pointer;font-family:inherit">← 返回客户列表</button>
+    </div>
 
     <!-- 1. 客户档案 -->
     <section id="sec-1">
@@ -270,12 +273,18 @@ section{margin-bottom:20px}
 
 <button class="back-top no-print" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+// ===== Supabase =====
+const SUPABASE_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ===== Data Loading =====
 const DATA_KEY = 'storage_survey_latest';
 let data = null;
 
 function loadData() {
+  // First check localStorage (for backward compatibility)
   const stored = localStorage.getItem(DATA_KEY);
   if (stored) {
     try {
@@ -284,8 +293,75 @@ function loadData() {
       return;
     } catch(e) {}
   }
-  document.getElementById('loadingView').style.display = 'none';
-  document.getElementById('emptyView').style.display = 'block';
+  // Otherwise fetch from Supabase
+  fetchSupabaseList();
+}
+
+async function fetchSupabaseList() {
+  try {
+    const { data: list, error } = await supabase
+      .from('submissions')
+      .select('id, client_name, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    document.getElementById('loadingView').style.display = 'none';
+
+    if (list && list.length > 0) {
+      showClientList(list);
+    } else {
+      document.getElementById('emptyView').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('loadingView').style.display = 'none';
+    document.getElementById('emptyView').style.display = 'block';
+  }
+}
+
+function showClientList(list) {
+  const container = document.getElementById('emptyView');
+  container.style.display = 'block';
+  container.innerHTML = `
+    <div class="icon" style="font-size:32px">📋</div>
+    <h3>选择客户报告</h3>
+    <p style="margin-bottom:16px;font-size:12px;color:#B5A69A">共有 ${list.length} 位客户已提交数据</p>
+    <div style="text-align:left;max-width:360px;margin:0 auto">
+      ${list.map(item => `
+        <div onclick="loadFromSupabase(${item.id})" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;margin-bottom:8px;background:#fff;border-radius:10px;cursor:pointer;box-shadow:0 1px 6px rgba(139,107,74,.1);transition:all .2s;border:1px solid #EDE4DA" onmouseover="this.style.borderColor='#8B6B4A'" onmouseout="this.style.borderColor='#EDE4DA'">
+          <div><div style="font-size:14px;font-weight:600;color:#3D2B1F">👤 ${item.client_name || '未知客户'}</div><div style="font-size:11px;color:#B5A69A;margin-top:2px">${new Date(item.created_at).toLocaleString('zh-CN')}</div></div>
+          <div style="font-size:18px;color:#8B6B4A">→</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:16px;font-size:12px;color:#B5A69A">或上传已保存的 JSON 数据文件</div>
+    <input type="file" accept=".json" style="display:none" id="fileInput" onchange="loadFile(event)">
+    <button class="btn" style="margin-top:8px;background:transparent;border:2px solid #E8DDD0;color:#8B6B4A" onclick="document.getElementById('fileInput').click()">📂 上传数据文件</button>
+  `;
+}
+
+async function loadFromSupabase(id) {
+  document.getElementById('emptyView').style.display = 'none';
+  document.getElementById('loadingView').style.display = 'block';
+  try {
+    const { data: row, error } = await supabase
+      .from('submissions')
+      .select('data, client_name, created_at')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    if (row) {
+      data = row.data;
+      // Attach metadata for display
+      data._submitted_at = row.created_at;
+      renderReport();
+    }
+  } catch(e) {
+    alert('加载失败，请重试');
+    document.getElementById('loadingView').style.display = 'none';
+    document.getElementById('emptyView').style.display = 'block';
+  }
 }
 
 function loadFile(e) {
@@ -308,7 +384,7 @@ function renderReport() {
   document.getElementById('loadingView').style.display = 'none';
   document.getElementById('emptyView').style.display = 'none';
   document.getElementById('sections').style.display = 'block';
-  document.getElementById('rptDate').textContent = new Date().toLocaleDateString('zh-CN');
+  document.getElementById('rptDate').textContent = data._submitted_at ? new Date(data._submitted_at).toLocaleString('zh-CN') : new Date().toLocaleDateString('zh-CN');
 
   const b = data.basic || {};
   const name = b.name || '未知客户';
@@ -665,6 +741,12 @@ function renderAdvice() {
 window.addEventListener('scroll', ()=>{
   document.getElementById('backTop').classList.toggle('show', window.scrollY > 500);
 });
+
+function backToList() {
+  document.getElementById('sections').style.display = 'none';
+  data = null;
+  fetchSupabaseList();
+}
 
 // ===== Init =====
 loadData();
