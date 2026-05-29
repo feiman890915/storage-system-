@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>定制收纳 · 数据分析报告</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#F8F4EF;color:#3D2B1F;overflow-x:hidden}
+/* ===== Print ===== */
+@media print{body{background:#fff;padding:0}.no-print{display:none!important}section{page-break-inside:avoid;break-inside:avoid}.report-header{page-break-after:avoid}}
+/* ===== Report Header ===== */
+.report-header{background:linear-gradient(150deg,#3D2B1F 0%,#5C4033 40%,#6B4F3A 70%,#8B6B4A 100%);color:#fff;padding:40px 28px;text-align:center}
+.report-header .logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#C4956A,#D4A574);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;color:#3D2B1F;font-weight:700}
+.report-header h1{font-size:26px;font-weight:700;margin-bottom:4px}
+.report-header h1 em{font-style:normal;background:linear-gradient(135deg,#C4956A,#D4A574);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.report-header .sub{font-size:13px;color:rgba(255,255,255,.5);margin-top:4px}
+.report-header .meta{display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap;font-size:12px;color:rgba(255,255,255,.4)}
+.report-header .meta span{display:flex;align-items:center;gap:4px}
+/* ===== Container ===== */
+.container{max-width:680px;margin:0 auto;padding:20px 16px 60px}
+section{margin-bottom:20px}
+/* ===== Section Header ===== */
+.s-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.s-head .num{width:26px;height:26px;border-radius:8px;background:#8B6B4A;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.s-head h2{font-size:17px;font-weight:600;color:#3D2B1F}
+.s-head .tag{margin-left:auto;font-size:10px;padding:3px 10px;border-radius:6px;background:#EDE4DA;color:#8B6B4A}
+/* ===== Card ===== */
+.card{background:#fff;border-radius:14px;padding:18px 20px;margin-bottom:12px;box-shadow:0 2px 12px rgba(139,107,74,.08)}
+.card-title{font-size:14px;font-weight:600;color:#3D2B1F;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+/* ===== Two Column ===== */
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.col3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:480px){.col2,.col3{grid-template-columns:1fr}}
+/* ===== Info Row ===== */
+.info-row{display:flex;padding:6px 0;border-bottom:1px solid #F5EDE4;font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-row .lbl{color:#8B6B4A;min-width:80px}
+.info-row .val{color:#3D2B1F;font-weight:500}
+/* ===== Progress Bar ===== */
+.bar{height:8px;border-radius:4px;background:#F5EDE4;overflow:hidden;margin:4px 0 2px}
+.bar .fill{height:100%;border-radius:4px;transition:width .6s ease}
+.bar-label{display:flex;justify-content:space-between;font-size:11px;color:#B5A69A}
+/* ===== Score Gauge ===== */
+.gauge-wrap{text-align:center;padding:10px 0}
+.gauge{width:120px;height:120px;border-radius:50%;background:conic-gradient(#8FA88A 0deg,#D4A574 0deg,#EDE4DA 360deg);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;position:relative}
+.gauge-inner{width:90px;height:90px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge-inner .big{font-size:28px;font-weight:700;color:#3D2B1F;line-height:1}
+.gauge-inner .lbl{font-size:10px;color:#B5A69A;margin-top:2px}
+.gauge-type{font-size:15px;font-weight:700;color:#8B6B4A;margin-bottom:2px}
+.gauge-sub{font-size:11px;color:#B5A69A}
+/* ===== Tag ===== */
+.tag{display:inline-block;padding:4px 12px;border-radius:6px;font-size:12px;margin:3px;background:#F5EDE4;color:#8B6B4A}
+.tag-solid{background:#8B6B4A;color:#fff}
+.tag-green{background:rgba(143,168,138,.15);color:#8FA88A}
+.tag-amber{background:rgba(196,149,106,.15);color:#C4956A}
+.tag-red{background:rgba(192,120,74,.15);color:#C0784A}
+/* ===== Pain Bar ===== */
+.pain-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.pain-row .name{min-width:70px;font-size:12px;color:#3D2B1F}
+.pain-row .bar-wrap{flex:1}
+.pain-row .bar-wrap .bar{height:6px}
+/* ===== Freq Pie (CSS) ===== */
+.pie-legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.pie-legend .item{display:flex;align-items:center;gap:4px;font-size:12px;color:#3D2B1F}
+.pie-legend .dot{width:10px;height:10px;border-radius:3px}
+/* ===== Flow Analysis ===== */
+.flow-steps{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;padding:8px 0}
+.flow-step{padding:6px 12px;border-radius:8px;background:#F5EDE4;font-size:12px;color:#8B6B4A;font-weight:500}
+.flow-arrow{color:#B5A69A;font-size:12px}
+/* ===== Advice List ===== */
+.advice-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F5EDE4}
+.advice-item:last-child{border-bottom:none}
+.advice-item .idx{width:24px;height:24px;border-radius:6px;background:#8B6B4A;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.advice-item .body{flex:1}
+.advice-item .body .t{font-size:14px;font-weight:600;color:#3D2B1F;margin-bottom:2px}
+.advice-item .body .d{font-size:12px;color:#B5A69A;line-height:1.6}
+/* ===== Empty State ===== */
+.empty{padding:40px 20px;text-align:center}
+.empty .icon{font-size:48px;margin-bottom:12px;opacity:.5}
+.empty h3{font-size:18px;color:#3D2B1F;margin-bottom:6px}
+.empty p{font-size:13px;color:#B5A69A;max-width:300px;margin:0 auto 20px;line-height:1.7}
+.empty .btn{display:inline-block;padding:12px 28px;border-radius:10px;background:linear-gradient(135deg,#C4956A,#D4A574);color:#3D2B1F;font-size:14px;font-weight:600;cursor:pointer;border:none;text-decoration:none;font-family:inherit}
+.empty .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(196,149,106,.3)}
+/* ===== Loading ===== */
+.loading{text-align:center;padding:60px 20px;color:#B5A69A;font-size:14px}
+.loading .spinner{width:32px;height:32px;border:3px solid #EDE4DA;border-top-color:#8B6B4A;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ===== Membership Card ===== */
+.member-card{background:#FDF8F3;border-radius:10px;padding:12px;text-align:center}
+.member-card .avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;margin:0 auto 6px}
+.member-card .name{font-size:13px;font-weight:600;color:#3D2B1F}
+.member-card .stat{font-size:11px;color:#B5A69A;margin-top:2px}
+/* ===== Printer ===== */
+@media print{.report-header{padding:20px 16px}.container{padding:12px}.no-print{display:none!important}}
+/* ===== Back to Top ===== */
+.back-top{display:none;position:fixed;bottom:20px;right:20px;width:40px;height:40px;border-radius:10px;background:#8B6B4A;color:#fff;border:none;font-size:18px;cursor:pointer;opacity:.8;z-index:100}
+.back-top.show{display:block}
+</style>
+</head>
+<body>
+<div class="report-header" id="top">
+  <div class="logo">収</div>
+  <h1>收纳设计 · <em>数据分析报告</em></h1>
+  <p class="sub">基于客户数据采集的智能分析，助力精准设计决策</p>
+  <div class="meta" id="reportMeta">
+    <span>📅 <span id="rptDate">-</span></span>
+    <span>👤 <span id="rptClient">未选择客户</span></span>
+  </div>
+</div>
+
+<div class="container" id="reportContent">
+  <!-- Loading -->
+  <div class="loading" id="loadingView">
+    <div class="spinner"></div>
+    <p>正在加载数据...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty" id="emptyView" style="display:none">
+    <div class="icon">📋</div>
+    <h3>暂无数据报告</h3>
+    <p>请先填写客户信息采集表并提交数据，系统将自动生成分析报告。</p>
+    <button class="btn" onclick="location.href='定制收纳系统-v3.html'">前往填写 →</button>
+    <div style="margin-top:16px;font-size:12px;color:#B5A69A">或上传已保存的 JSON 数据文件</div>
+    <input type="file" accept=".json,.xlsx" style="display:none" id="fileInput" onchange="loadFile(event)">
+    <button class="btn" style="margin-top:8px;background:transparent;border:2px solid #E8DDD0;color:#8B6B4A" onclick="document.getElementById('fileInput').click()">📂 上传数据文件</button>
+  </div>
+
+  <!-- Report Sections -->
+  <div id="sections" style="display:none">
+
+    <!-- 1. 客户档案 -->
+    <section id="sec-1">
+      <div class="s-head"><div class="num">01</div><h2>客户档案</h2><span class="tag">基础信息</span></div>
+      <div class="card">
+        <div class="card-title">👤 基本信息</div>
+        <div class="info-row"><span class="lbl">客户姓名</span><span class="val" id="rName">-</span></div>
+        <div class="info-row"><span class="lbl">联系方式</span><span class="val" id="rPhone">-</span></div>
+        <div class="info-row"><span class="lbl">微信</span><span class="val" id="rWechat">-</span></div>
+        <div class="info-row"><span class="lbl">住宅类型</span><span class="val" id="rHomeType">-</span></div>
+        <div class="info-row"><span class="lbl">房屋面积</span><span class="val" id="rArea">-</span></div>
+        <div class="info-row"><span class="lbl">常住人口</span><span class="val" id="rPop">-</span></div>
+        <div class="info-row"><span class="lbl">房屋状态</span><span class="val" id="rHouseStatus">-</span></div>
+        <div class="info-row"><span class="lbl">项目类型</span><span class="val" id="rProjectType">-</span></div>
+        <div class="info-row"><span class="lbl">预算范围</span><span class="val" id="rBudget">-</span></div>
+        <div class="info-row"><span class="lbl">信息来源</span><span class="val" id="rSource">-</span></div>
+      </div>
+    </section>
+
+    <!-- 2. 体态分析 -->
+    <section id="sec-2">
+      <div class="s-head"><div class="num">02</div><h2>体态分析</h2><span class="tag">黄金区计算</span></div>
+      <div class="card">
+        <div class="card-title">👨‍👩‍👧‍👦 家庭成员数据</div>
+        <div id="memberCards" class="col3"></div>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,#FDF8F3,#fff);border:1px solid #C4956A">
+        <div class="card-title" style="color:#8B6B4A">📐 推荐黄金收纳区</div>
+        <div id="goldenZone" style="text-align:center;padding:6px 0">
+          <div style="font-size:28px;font-weight:700;color:#8FA88A">-</div>
+          <div style="font-size:13px;color:#8B6B4A;margin-top:2px">站立伸手可及的最佳收纳高度范围</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 痛点分布 -->
+    <section id="sec-3">
+      <div class="s-head"><div class="num">03</div><h2>痛点分布</h2><span class="tag">问题定位</span></div>
+      <div class="card">
+        <div class="card-title">🚨 各空间困扰程度</div>
+        <div id="painChart"></div>
+      </div>
+      <div class="card" id="painDescCard" style="display:none">
+        <div class="card-title">📝 客户自述痛点</div>
+        <div id="painDescs"></div>
+      </div>
+    </section>
+
+    <!-- 4. 断舍离诊断 -->
+    <section id="sec-4">
+      <div class="s-head"><div class="num">04</div><h2>断舍离诊断</h2><span class="tag">物品筛选策略</span></div>
+      <div class="col2">
+        <div class="card">
+          <div class="gauge-wrap">
+            <div class="gauge" id="dGauge"><div class="gauge-inner"><div class="big" id="dGaugeScore">0</div><div class="lbl">总分</div></div></div>
+            <div class="gauge-type" id="dGaugeType">-</div>
+            <div class="gauge-sub" id="dGaugeRange">满分 65 分</div>
+          </div>
+        </div>
+        <div class="card" style="background:#FDF8F3;border:1px solid #C4956A">
+          <div class="card-title" style="color:#8B6B4A">💡 匹配策略</div>
+          <p id="dStrategy" style="font-size:13px;color:#666;line-height:1.8">-</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 各维度得分</div>
+        <div id="dDetail"></div>
+      </div>
+    </section>
+
+    <!-- 5. 使用频率分析 -->
+    <section id="sec-5">
+      <div class="s-head"><div class="num">05</div><h2>使用频率分析</h2><span class="tag">物品定位</span></div>
+      <div class="card">
+        <div class="card-title">🔄 频率分布</div>
+        <div id="freqChart"></div>
+        <div class="pie-legend" id="freqLegend"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📦 按空间分布</div>
+        <div id="freqArea"></div>
+      </div>
+    </section>
+
+    <!-- 6. 动线特征 -->
+    <section id="sec-6">
+      <div class="s-head"><div class="num">06</div><h2>动线特征</h2><span class="tag">行为轨迹</span></div>
+      <div class="col2">
+        <div class="card">
+          <div class="card-title">☀️ 清晨动线</div>
+          <div id="morningFlow" class="flow-steps"></div>
+          <div style="margin-top:8px;font-size:12px;color:#B5A69A;text-align:center">出门常找不到：<span id="lostItems" style="color:#C0784A"></span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🌙 晚间动线</div>
+          <div id="eveningFlow" class="flow-steps"></div>
+          <div style="margin-top:8px;font-size:12px;color:#B5A69A;text-align:center">外套/包包放置：<span id="coatPlace" style="color:#8B6B4A"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. 生活习惯画像 -->
+    <section id="sec-7">
+      <div class="s-head"><div class="num">07</div><h2>生活习惯画像</h2><span class="tag">行为特征</span></div>
+      <div class="card">
+        <div class="card-title">⏰ 作息标签</div>
+        <div id="lifeTags"></div>
+      </div>
+      <div class="col2">
+        <div class="card">
+          <div class="card-title">🛍️ 购物风格</div>
+          <div id="shopProfile" style="font-size:13px;color:#3D2B1F;line-height:1.8"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🧹 收纳偏好</div>
+          <div id="orgProfile" style="font-size:13px;color:#3D2B1F;line-height:1.8"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">❤️ 兴趣与需求</div>
+        <div id="interestTags"></div>
+      </div>
+    </section>
+
+    <!-- 8. 设计策略建议 -->
+    <section id="sec-8">
+      <div class="s-head"><div class="num">08</div><h2>设计策略建议</h2><span class="tag">行动指南</span></div>
+      <div class="card" style="background:linear-gradient(135deg,#FDF8F3,#fff);border:2px solid #8B6B4A">
+        <div class="card-title" style="color:#8B6B4A">📋 综合建议</div>
+        <div id="adviceList"></div>
+      </div>
+      <div class="card no-print" style="text-align:center">
+        <button class="report-header" style="display:inline-block;padding:12px 32px;border:none;border-radius:10px;background:linear-gradient(135deg,#C4956A,#D4A574);color:#3D2B1F;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit" onclick="window.print()">🖨️ 打印 / 导出 PDF</button>
+        <button style="margin-left:10px;padding:12px 32px;border:2px solid #E8DDD0;border-radius:10px;background:transparent;color:#8B6B4A;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit" onclick="location.href='定制收纳系统-v3.html'">← 返回采集表</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<button class="back-top no-print" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ===== Data Loading =====
+const DATA_KEY = 'storage_survey_latest';
+let data = null;
+
+function loadData() {
+  const stored = localStorage.getItem(DATA_KEY);
+  if (stored) {
+    try {
+      data = JSON.parse(stored);
+      renderReport();
+      return;
+    } catch(e) {}
+  }
+  document.getElementById('loadingView').style.display = 'none';
+  document.getElementById('emptyView').style.display = 'block';
+}
+
+function loadFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      data = JSON.parse(ev.target.result);
+      renderReport();
+    } catch(e) {
+      alert('文件格式错误，请上传 JSON 数据文件');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ===== Render =====
+function renderReport() {
+  document.getElementById('loadingView').style.display = 'none';
+  document.getElementById('emptyView').style.display = 'none';
+  document.getElementById('sections').style.display = 'block';
+  document.getElementById('rptDate').textContent = new Date().toLocaleDateString('zh-CN');
+
+  const b = data.basic || {};
+  const name = b.name || '未知客户';
+  document.getElementById('rptClient').textContent = name;
+
+  // 1. Basic Info
+  document.getElementById('rName').textContent = name;
+  document.getElementById('rPhone').textContent = b.phone || '未填写';
+  document.getElementById('rWechat').textContent = b.wechat || '未填写';
+  document.getElementById('rHomeType').textContent = b.homeType || '未填写';
+  document.getElementById('rArea').textContent = b.area ? b.area + ' ㎡' : '未填写';
+  document.getElementById('rPop').textContent = b.pop ? b.pop + ' 人' : '未填写';
+  document.getElementById('rHouseStatus').textContent = b.houseStatus || '未填写';
+  document.getElementById('rProjectType').textContent = b.projectType || '未填写';
+  document.getElementById('rBudget').textContent = b.budget || '未填写';
+  document.getElementById('rSource').textContent = b.source || '未填写';
+
+  // 2. Body Analysis
+  renderMembers(data.members);
+  calcGoldenZone(data.members);
+
+  // 3. Pain Points
+  renderPain(data.painPoints);
+
+  // 4. Declutter
+  renderDeclutter(data.declutter);
+
+  // 5. Frequency
+  renderFreq(data.freq);
+
+  // 6. Movement Flow
+  renderFlow(data.morning, data.evening);
+
+  // 7. Lifestyle
+  renderLifestyle(data.lifestyle);
+
+  // 8. Advice
+  renderAdvice();
+}
+
+// ===== 2. Members =====
+function renderMembers(members) {
+  const c = document.getElementById('memberCards');
+  c.innerHTML = '';
+  if (!members || !members.length) { c.innerHTML = '<div style="color:#B5A69A;text-align:center;grid-column:1/-1;padding:12px">暂无成员数据</div>'; return; }
+  const rels = ['户主','配偶','子女','子女2','长辈'];
+  const colors = ['#8B6B4A','#C4956A','#8FA88A','#C0784A','#D4A574'];
+  members.forEach((m,i)=>{
+    if (!m || (!m.h && !m.w)) return;
+    const r = rels[i] || '成员'+(i+1);
+    const div = document.createElement('div'); div.className = 'member-card';
+    div.innerHTML = `<div class="avatar" style="background:${colors[i%5]}">${r[0]}</div>
+      <div class="name">${r}</div>
+      <div class="stat">${m.h ? '身高 '+m.h+'cm' : ''}${m.w ? ' · 体重 '+m.w+'kg' : ''}</div>
+      <div class="stat">${m.sh ? '肩宽 '+m.sh+'cm' : ''}${m.a ? ' · 臂长 '+m.a+'cm' : ''}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function calcGoldenZone(members) {
+  const el = document.getElementById('goldenZone');
+  if (!members || !members.length) { el.innerHTML = '<div style="color:#B5A69A">无成员数据，无法计算</div>'; return; }
+  const heights = members.filter(m=>m&&m.h).map(m=>parseInt(m.h));
+  if (!heights.length) { el.innerHTML = '<div style="color:#B5A69A">请填写身高数据</div>'; return; }
+  const minH = Math.min(...heights);
+  const maxH = Math.max(...heights);
+  const short = Math.min(minH, 160);
+  const tall = Math.max(maxH, 175);
+  // Golden zone: from approximately (shortest * 0.4) to (shortest * 0.9)
+  const low = Math.round(short * 0.4);
+  const high = Math.round(tall * 0.9);
+  el.innerHTML = `
+    <div style="font-size:28px;font-weight:700;color:#8FA88A">${low} — ${high} cm</div>
+    <div style="font-size:13px;color:#8B6B4A;margin-top:2px">站立伸手可及的最佳收纳高度范围</div>
+    <div style="font-size:11px;color:#B5A69A;margin-top:6px">基于家庭成员身高 ${minH}-${maxH}cm 计算</div>`;
+}
+
+// ===== 3. Pain Points =====
+function renderPain(pains) {
+  const c = document.getElementById('painChart');
+  c.innerHTML = '';
+  if (!pains || !Object.keys(pains).length) { c.innerHTML = '<div style="color:#B5A69A;text-align:center;padding:12px">未选择困扰区域</div>'; return; }
+  const colors = ['#8FA88A','#C4956A','#D4A574','#C0784A'];
+  const entries = Object.entries(pains);
+  entries.forEach(([area, p], i)=>{
+    const sev = p.sev || 3;
+    const pct = (sev / 5) * 100;
+    const row = document.createElement('div'); row.className = 'pain-row';
+    const color = colors[Math.min(sev-1,3)];
+    row.innerHTML = `
+      <span class="name">${area}</span>
+      <div class="bar-wrap"><div class="bar"><div class="fill" style="width:${pct}%;background:${color}"></div></div><div class="bar-label"><span></span><span>${sev}/5 ★</span></div></div>`;
+    c.appendChild(row);
+  });
+  // Descriptions
+  const dc = document.getElementById('painDescCard');
+  const dd = document.getElementById('painDescs');
+  dd.innerHTML = '';
+  let hasDesc = false;
+  entries.forEach(([area, p])=>{
+    if (p.desc) {
+      hasDesc = true;
+      const d = document.createElement('div'); d.style.cssText = 'font-size:13px;color:#3D2B1F;margin-bottom:6px;padding:8px 10px;background:#FDF8F3;border-radius:8px';
+      d.innerHTML = `<strong style="color:#8B6B4A">${area}：</strong>${p.desc}`;
+      dd.appendChild(d);
+    }
+  });
+  dc.style.display = hasDesc ? 'block' : 'none';
+}
+
+// ===== 4. Declutter =====
+function renderDeclutter(da) {
+  if (!da || !Object.keys(da).length) return;
+  const vals = Object.values(da).filter(v=>v!==undefined&&v!==null);
+  if (!vals.length) return;
+  const total = vals.reduce((a,b)=>a+b,0);
+  document.getElementById('dGaugeScore').textContent = total;
+  // Gauge visual
+  const pct = Math.min((total/65)*100, 100);
+  const deg = (pct/100)*360;
+  document.getElementById('dGauge').style.background = `conic-gradient(#8FA88A 0deg, #D4A574 ${deg}deg, #EDE4DA ${deg}deg 360deg)`;
+  // Type & strategy
+  let type, strategy, range;
+  if (total <= 25) { type = '重度保留型'; strategy = '增加储物容量为优先，设计更多封闭式收纳，少做开放式展架。引导客户逐步断舍离。'; range = '0-25分'; }
+  else if (total <= 40) { type = '适度保留型'; strategy = '封闭+开放结合，预留20%弹性空间，建议分批筛选物品渐进式优化。'; range = '26-40分'; }
+  else if (total <= 55) { type = '倾向精简型'; strategy = '注重展示性收纳，精细化分区，高品质收纳配件，强调秩序美感。'; range = '41-55分'; }
+  else { type = '极简主义者'; strategy = '极致简洁设计，强调美学与空间感，低密度收纳方案，注重留白。'; range = '56-65分'; }
+  document.getElementById('dGaugeType').textContent = type;
+  document.getElementById('dGaugeRange').textContent = range + ' · 满分65分';
+  document.getElementById('dStrategy').textContent = strategy;
+  // Detail
+  const KEEP_Q = ['闲置1年以上物品处理','不喜欢的礼物处理','过期品立即丢弃','破旧衣服处理','包装盒保留','「以后可能用到」态度','小票/杂志处理','旧玩具/作业处理'];
+  const BUY_Q = ['先思考存放位置','冲动购物','囤货习惯','搭配现有衣物','网购频率'];
+  const dd = document.getElementById('dDetail'); dd.innerHTML = '';
+  for (let i=0;i<KEEP_Q.length;i++) { const v=da['k'+i]; if(v!==undefined) { const row=document.createElement('div'); row.className='pain-row'; row.innerHTML=`<span class="name" style="min-width:100px">保留${i+1}</span><div class="bar-wrap"><div class="bar"><div class="fill" style="width:${v*20}%;background:#C4956A"></div></div><div class="bar-label"><span style="color:#B5A69A">${KEEP_Q[i]}</span><span>${v}/5</span></div></div>`; dd.appendChild(row); } }
+  for (let i=0;i<BUY_Q.length;i++) { const v=da['b'+i]; if(v!==undefined) { const row=document.createElement('div'); row.className='pain-row'; row.innerHTML=`<span class="name" style="min-width:100px">购买${i+1}</span><div class="bar-wrap"><div class="bar"><div class="fill" style="width:${v*20}%;background:#D4A574"></div></div><div class="bar-label"><span style="color:#B5A69A">${BUY_Q[i]}</span><span>${v}/5</span></div></div>`; dd.appendChild(row); } }
+}
+
+// ===== 5. Frequency =====
+const FREQ_OPTS = ['每日','每周','每月','每季','低频'];
+const FREQ_COLORS = ['#8FA88A','#C4956A','#D4A574','#C0784A','#B5A69A'];
+const FREQ_AREAS = ['玄关','客厅','厨房','主卧','卫生间','儿童房'];
+
+function renderFreq(fr) {
+  const c = document.getElementById('freqChart'); c.innerHTML = '';
+  const lg = document.getElementById('freqLegend'); lg.innerHTML = '';
+  if (!fr || !Object.keys(fr).length) { c.innerHTML = '<div style="color:#B5A69A;text-align:center;padding:12px">未标注使用频率</div>'; return; }
+  // Count by frequency
+  const counts = { '每日':0,'每周':0,'每月':0,'每季':0,'低频':0 };
+  Object.values(fr).forEach(v=>{ if (counts[v]!==undefined) counts[v]++ });
+  const total = Object.values(counts).reduce((a,b)=>a+b,0);
+  // Bars
+  FREQ_OPTS.forEach((f,i)=>{
+    const pct = total ? (counts[f]/total)*100 : 0;
+    const row = document.createElement('div'); row.className = 'pain-row';
+    row.innerHTML = `<span class="name" style="min-width:50px;font-weight:600;color:${FREQ_COLORS[i]}">${f}</span>
+      <div class="bar-wrap"><div class="bar" style="height:10px"><div class="fill" style="width:${pct}%;background:${FREQ_COLORS[i]}"></div></div>
+      <div class="bar-label"><span style="color:#B5A69A">${counts[f]} 项物品</span><span>${Math.round(pct)}%</span></div></div>`;
+    c.appendChild(row);
+  });
+  // Legend
+  FREQ_OPTS.forEach((f,i)=>{
+    const item = document.createElement('div'); item.className='item';
+    item.innerHTML = `<span class="dot" style="background:${FREQ_COLORS[i]}"></span>${f} (${counts[f]})`;
+    lg.appendChild(item);
+  });
+  // By area
+  renderFreqByArea(fr);
+}
+
+function renderFreqByArea(fr) {
+  const c = document.getElementById('freqArea'); c.innerHTML = '';
+  const ITEMS = ['当季常穿鞋','钥匙/门卡','包包','遥控器','书籍/杂志','药品','锅具','调料','小家电','当季上装','当季下装','内衣/袜','床品套件','换季衣物','护肤品','洗漱用品','囤货','日常衣物','玩具','绘本/学习'];
+  const AREAS = ['玄关','玄关','玄关','客厅','客厅','客厅','厨房','厨房','厨房','主卧','主卧','主卧','主卧','主卧','卫生间','卫生间','卫生间','儿童房','儿童房','儿童房'];
+  const areaItems = {};
+  for (let i=0;i<ITEMS.length;i++) {
+    const v = fr['f'+i];
+    if (v) {
+      const a = AREAS[i];
+      if (!areaItems[a]) areaItems[a] = [];
+      areaItems[a].push({item:ITEMS[i],freq:v});
+    }
+  }
+  FREQ_AREAS.forEach(a=>{
+    if (!areaItems[a] || !areaItems[a].length) return;
+    const div = document.createElement('div'); div.style.cssText = 'margin-bottom:10px';
+    div.innerHTML = `<div style="font-size:12px;font-weight:600;color:#8B6B4A;margin-bottom:4px">${a}</div>`;
+    const tags = document.createElement('div');
+    areaItems[a].forEach(({item,freq})=>{
+      const idx = FREQ_OPTS.indexOf(freq);
+      const color = idx>=0 ? FREQ_COLORS[idx] : '#B5A69A';
+      const t = document.createElement('span'); t.className = 'tag'; t.style.background = color+'22'; t.style.color = color; t.style.fontWeight = '500';
+      t.textContent = item + ' · ' + freq;
+      tags.appendChild(t);
+    });
+    div.appendChild(tags);
+    c.appendChild(div);
+  });
+}
+
+// ===== 6. Flow =====
+function renderFlow(morning, evening) {
+  // Morning
+  const mc = document.getElementById('morningFlow');
+  if (morning && morning.flow) {
+    const steps = morning.flow.split('→');
+    mc.innerHTML = steps.map((s,i)=>`${i>0?'<span class="flow-arrow">→</span>':''}<span class="flow-step">${s}</span>`).join('');
+  } else {
+    mc.innerHTML = '<span style="color:#B5A69A;font-size:12px">未填写</span>';
+  }
+  document.getElementById('lostItems').textContent = (morning && morning.lost && morning.lost.length) ? morning.lost.join('、') : '未填写';
+  // Evening
+  const ec = document.getElementById('eveningFlow');
+  if (evening && evening.flow) {
+    const steps = evening.flow.split('→');
+    ec.innerHTML = steps.map((s,i)=>`${i>0?'<span class="flow-arrow">→</span>':''}<span class="flow-step">${s}</span>`).join('');
+  } else {
+    ec.innerHTML = '<span style="color:#B5A69A;font-size:12px">未填写</span>';
+  }
+  document.getElementById('coatPlace').textContent = (evening && evening.coat) ? evening.coat : '未填写';
+}
+
+// ===== 7. Lifestyle =====
+function renderLifestyle(life) {
+  if (!life) return;
+  const tc = document.getElementById('lifeTags'); tc.innerHTML = '';
+  const tags = [];
+  if (life.wake) tags.push({text:'⏰ 起床 '+life.wake,cls:'tag-solid'});
+  if (life.sleep) tags.push({text:'🌙 就寝 '+life.sleep,cls:'tag-solid'});
+  if (life.breakfast) tags.push({text:'🍳 早餐 '+life.breakfast,cls:'tag-green'});
+  if (life.dinner) tags.push({text:'🍲 晚餐 '+life.dinner,cls:'tag-green'});
+  if (life.wfh) tags.push({text:'💻 办公 '+life.wfh,cls:'tag-amber'});
+  if (life.fit) tags.push({text:'🏃 运动 '+life.fit,cls:'tag-amber'});
+  if (life.pet) tags.push({text:'🐾 宠物 '+life.pet,cls:'tag-red'});
+  tags.forEach(t=>{const s=document.createElement('span');s.className='tag '+t.cls;s.textContent=t.text;tc.appendChild(s)});
+
+  // Shopping
+  const sc = document.getElementById('shopProfile');
+  let shopText = '';
+  if (life.shopFreq) shopText += '采购频率：' + life.shopFreq + '\n';
+  if (life.shopCh) shopText += '买菜渠道：' + life.shopCh + '\n';
+  if (life.hoard) shopText += '购物风格：' + life.hoard;
+  sc.innerHTML = shopText.replace(/\n/g,'<br>') || '未填写';
+
+  // Organization
+  const oc = document.getElementById('orgProfile');
+  let orgText = '';
+  if (life.org) orgText += '收纳习惯：' + life.org + '\n';
+  if (life.fold) orgText += '折叠衣物：' + life.fold + '\n';
+  if (life.vis) orgText += '可视化收纳：' + life.vis;
+  oc.innerHTML = orgText.replace(/\n/g,'<br>') || '未填写';
+
+  // Interests
+  const ic = document.getElementById('interestTags'); ic.innerHTML = '';
+  if (life.hobbies && life.hobbies.length) life.hobbies.forEach(h=>{const s=document.createElement('span');s.className='tag tag-solid';s.textContent=h;ic.appendChild(s)});
+  if (life.special) { const s=document.createElement('span');s.className='tag tag-red';s.textContent='📌 '+life.special;ic.appendChild(s); }
+  if (!ic.children.length) ic.innerHTML = '<span style="color:#B5A69A;font-size:12px">未填写特殊需求</span>';
+}
+
+// ===== 8. Comprehensive Advice =====
+function renderAdvice() {
+  const b = data.basic || {};
+  const pains = data.painPoints || {};
+  const fr = data.freq || {};
+  const da = data.declutter || {};
+  const life = data.lifestyle || {};
+
+  const advice = [];
+  // 1. Space priority based on pain points
+  const painAreas = Object.keys(pains);
+  if (painAreas.length) {
+    const topPain = painAreas.slice(0, 3).join('、');
+    advice.push({
+      title: '重点关注空间：' + painAreas.slice(0,3).join('、'),
+      desc: '客户明确表示这些区域存在收纳困扰，建议优先设计。结合使用频率数据，将高频物品调整至黄金收纳区范围内。'
+    });
+  }
+  // 2. Body-based cabinet design
+  const members = data.members || [];
+  const heights = members.filter(m=>m&&m.h).map(m=>parseInt(m.h));
+  if (heights.length) {
+    const minH = Math.min(...heights), maxH = Math.max(...heights);
+    advice.push({
+      title: '量身定制柜体高度',
+      desc: `家庭成员身高范围 ${minH}-${maxH}cm，黄金收纳区建议设为 ${Math.round(minH*0.4)}-${Math.round(maxH*0.9)}cm。挂杆高度以最常用者身高 ×1.2 倍为基准，层板进深参考最大臂长。`
+    });
+  }
+  // 3. Declutter-based
+  const vals = Object.values(da).filter(v=>v!==undefined&&v!==null);
+  if (vals.length) {
+    const total = vals.reduce((a,b)=>a+b,0);
+    if (total <= 25) advice.push({title:'增加储物容量',desc:'客户属于重度保留型，建议设计更多封闭式收纳空间，减少开放式展架，预留30%弹性扩容空间。'});
+    else if (total <= 40) advice.push({title:'封闭+开放结合',desc:'客户适度保留，可采用二八原则（80%封闭+20%开放），预留弹性空间供未来调整。'});
+    else if (total <= 55) advice.push({title:'注重展示性收纳',desc:'客户倾向精简，可多做展示性收纳设计，高品质配件突出秩序美感，精细化分区。'});
+    else advice.push({title:'低密度极简设计',desc:'客户是极简主义者，强调留白与空间感，控制收纳密度在70%以下，注重美学表达。'});
+  }
+  // 4. Movement-based
+  if (data.morning && data.morning.lost && data.morning.lost.length) {
+    advice.push({
+      title: '玄关一站式设计',
+      desc: `客户出门常找不到 ${data.morning.lost.join('、')}，建议玄关设置「一站式出门托盘」，所有外出随身物品集中存放，一目了然。`
+    });
+  }
+  // 5. Lifestyle-based
+  if (life && life.hoard === '经常囤货') {
+    advice.push({
+      title: '囤货收纳专区',
+      desc: '客户有囤货习惯，建议设置专门的囤货收纳区（储物间或柜体底层），采用可拉出式货架，按品类分装，标注保质期。'
+    });
+  }
+  if (life && life.org === '需要督促') {
+    advice.push({
+      title: '易维护收纳系统',
+      desc: '客户收纳习惯需要督促，设计上应以「少步骤、易归位」为原则：减少开门动作、多用开放式挂放、清晰标签引导。'
+    });
+  }
+  if (life && life.org === '随手归位') {
+    advice.push({
+      title: '精细化分区系统',
+      desc: '客户有良好的随手归位习惯，可设计更精细的分区系统，最大化空间利用效率，精细到每个抽屉的分隔。'
+    });
+  }
+  // 6. Hobbies
+  if (life && life.hobbies && life.hobbies.length) {
+    advice.push({
+      title: '兴趣收纳空间',
+      desc: `客户爱好 ${life.hobbies.join('、')}，建议在这些物品存放区域设置专门的展示/收纳区，兼顾取用便利与展示美观。`
+    });
+  }
+  // 7. Special needs
+  if (life && life.special) {
+    advice.push({
+      title: '特殊需求考虑',
+      desc: `客户有特殊需求：${life.special}。设计需针对性调整：如有行动不便者则减少弯腰/踮脚，孕妇需考虑未来变化，左撇子需调整抽屉拉手方向。`
+    });
+  }
+  // 8. Budget-based
+  if (b.budget) {
+    advice.push({
+      title: '预算规划建议',
+      desc: `客户预算 ${b.budget}，建议根据痛点优先级分配预算：痛点区域占60%，全屋通用收纳占25%，弹性预留15%。优先解决高频使用空间的收纳问题。`
+    });
+  }
+
+  const ac = document.getElementById('adviceList'); ac.innerHTML = '';
+  advice.forEach((a,i)=>{
+    const div = document.createElement('div'); div.className = 'advice-item';
+    div.innerHTML = `<div class="idx">${i+1}</div><div class="body"><div class="t">${a.title}</div><div class="d">${a.desc}</div></div>`;
+    ac.appendChild(div);
+  });
+}
+
+// ===== Scroll =====
+window.addEventListener('scroll', ()=>{
+  document.getElementById('backTop').classList.toggle('show', window.scrollY > 500);
+});
+
+// ===== Init =====
+loadData();
+</script>
+</body>
+</html>

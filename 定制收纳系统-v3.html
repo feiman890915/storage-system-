@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>定制收纳设计 · 客户信息采集</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#F8F4EF;color:#3D2B1F;overflow-x:hidden}
+/* ===== Nav ===== */
+.top-bar{position:sticky;top:0;z-index:100;background:rgba(248,244,239,.95);backdrop-filter:blur(12px);padding:12px 20px;display:none;align-items:center;gap:12px;border-bottom:1px solid rgba(139,107,74,.1)}
+.top-bar.show{display:flex}
+.top-bar .step-indicator{display:flex;gap:6px;flex:1}
+.top-bar .dot{width:8px;height:8px;border-radius:4px;background:#e0e0e0;transition:all .4s ease}
+.top-bar .dot.active{background:#8B6B4A;width:24px}
+.top-bar .step-label{font-size:12px;color:#B5A69A;white-space:nowrap}
+/* ===== Cover ===== */
+.cover{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(150deg,#3D2B1F 0%,#5C4033 40%,#6B4F3A 70%,#8B6B4A 100%);color:#fff;padding:40px 28px;text-align:center;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:-30%;left:-20%;width:140%;height:140%;background:radial-gradient(ellipse at 30% 40%,rgba(196,149,106,.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 60%,rgba(196,149,106,.05) 0%,transparent 50%);animation:drift 25s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate(0,0)scale(1)}100%{transform:translate(-3%,-3%)scale(1.05)}}
+.cover .logo-wrap{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#C4956A,#D4A574);display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative;z-index:1;font-size:32px;color:#3D2B1F;font-weight:700}
+.cover h1{font-size:36px;font-weight:700;line-height:1.2;margin-bottom:8px;position:relative;z-index:1}
+.cover h1 em{font-style:normal;background:linear-gradient(135deg,#C4956A,#D4A574);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cover .sub{font-size:15px;color:rgba(255,255,255,.5);max-width:320px;line-height:1.7;margin-bottom:36px;position:relative;z-index:1}
+.cover .stats{display:flex;gap:28px;margin-bottom:36px;position:relative;z-index:1;flex-wrap:wrap;justify-content:center}
+.cover .stat-item{text-align:center}
+.cover .stat-num{font-size:26px;font-weight:700;color:#C4956A}
+.cover .stat-label{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.cover .btn-start{display:inline-flex;align-items:center;gap:10px;padding:16px 52px;border:none;border-radius:50px;background:linear-gradient(135deg,#C4956A,#D4A574);color:#3D2B1F;font-size:17px;font-weight:600;cursor:pointer;transition:all .3s ease;position:relative;z-index:1}
+.cover .btn-start:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(196,149,106,.35)}
+/* ===== Section ===== */
+section{display:none;padding:28px 20px 40px;max-width:480px;margin:0 auto}
+section.active{display:block}
+.s-head{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.s-head .num{width:28px;height:28px;border-radius:8px;background:#8B6B4A;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.s-head h2{font-size:18px;font-weight:600;color:#3D2B1F}
+.s-head .s-tag{margin-left:auto;font-size:10px;padding:3px 10px;border-radius:6px;background:#EDE4DA;color:#8B6B4A}
+/* ===== Ill Card ===== */
+.ill-card{border-radius:12px;overflow:hidden;margin-bottom:16px;background:#3D2B1F;box-shadow:0 4px 20px rgba(61,43,31,.2)}
+.ill-card svg{width:100%;height:auto;display:block}
+.ill-card .cap{padding:8px 14px;font-size:11px;color:rgba(255,255,255,.5);background:rgba(0,0,0,.25);text-align:center;letter-spacing:.5px}
+/* ===== Card ===== */
+.card{background:#fff;border-radius:14px;padding:18px 20px;margin-bottom:12px;box-shadow:0 2px 12px rgba(139,107,74,.08)}
+.card-title{font-size:14px;font-weight:600;color:#3D2B1F;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .ico{width:22px;height:22px;border-radius:6px;background:#EDE4DA;display:flex;align-items:center;justify-content:center;font-size:12px}
+/* ===== Form ===== */
+.fg{margin-bottom:14px}
+.fg:last-child{margin-bottom:0}
+.fg label{display:block;font-size:12px;font-weight:500;color:#8B6B4A;margin-bottom:5px}
+.fg label .req{color:#e74c3c}
+/* ===== Select Card Grid ===== */
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.opt-card{position:relative;padding:10px 12px;border-radius:10px;border:2px solid #E8DDD0;background:#FAF8F5;cursor:pointer;transition:all .2s ease;text-align:center;font-size:13px;color:#6B5A4E}
+.opt-card:hover{border-color:#C4956A;color:#C4956A}
+.opt-card input{position:absolute;opacity:0}
+.opt-card:has(input:checked){border-color:#8B6B4A;background:#F5EDE4;color:#8B6B4A;font-weight:600;box-shadow:0 0 0 3px rgba(139,107,74,.12)}
+.opt-card .sub{font-size:10px;color:#B5A69A;margin-top:2px;font-weight:400}
+.opt-card:has(input:checked) .sub{color:#8B6B4A}
+/* ===== Input ===== */
+input[type=text],input[type=tel],input[type=number]{width:100%;padding:11px 14px;border:2px solid #E8DDD0;border-radius:10px;font-size:14px;outline:none;transition:all .2s;background:#FAF8F5;font-family:inherit}
+input:focus{border-color:#C4956A;background:#fff;box-shadow:0 0 0 3px rgba(196,149,106,.15)}
+/* ===== Member Tag ===== */
+.member-tags{display:flex;gap:8px;flex-wrap:wrap}
+.member-tag{padding:8px 14px;border-radius:8px;border:2px solid #E8DDD0;cursor:pointer;font-size:13px;transition:all .2s;background:#FAF8F5;color:#6B5A4E;position:relative}
+.member-tag input{position:absolute;opacity:0}
+.member-tag:has(input:checked){border-color:#8B6B4A;background:#F5EDE4;color:#8B6B4A;font-weight:600}
+/* ===== Slider ===== */
+.range-wrap{padding:8px 4px}
+.range-wrap input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(90deg,#C4956A,#D4A574);outline:none}
+.range-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #8B6B4A;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.range-label{display:flex;justify-content:space-between;font-size:11px;color:#B5A69A;margin-top:4px}
+.range-val{text-align:center;font-size:22px;font-weight:700;color:#8B6B4A;margin-top:4px}
+/* ===== Pain Check ===== */
+.area-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.area-chk{position:relative;padding:10px 12px;border-radius:10px;border:2px solid #E8DDD0;cursor:pointer;transition:all .2s;text-align:center;font-size:13px;background:#FAF8F5;color:#6B5A4E}
+.area-chk input{position:absolute;opacity:0}
+.area-chk:has(input:checked){border-color:#C0784A;background:#FDF6F0;color:#C0784A;font-weight:600}
+.area-chk .badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:#EDE4DA;color:#8B6B4A;margin-left:4px}
+.area-chk:has(input:checked) .badge{background:rgba(192,120,74,.15);color:#C0784A}
+/* ===== Severity ===== */
+.sev-wrap{display:flex;gap:6px}
+.sev-btn{flex:1;padding:8px 0;border-radius:8px;border:2px solid #E8DDD0;cursor:pointer;text-align:center;font-size:13px;transition:all .2s;background:#FAF8F5;color:#B5A69A}
+.sev-btn input{position:absolute;opacity:0}
+.sev-btn:has(input:checked){border-color:#C4956A;background:#fff8e1;color:#C4956A;font-weight:600}
+/* ===== Freq Selector ===== */
+.freq-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #EDE4DA}
+.freq-row:last-child{border-bottom:none}
+.freq-row .fname{flex:1;font-size:13px;color:#3D2B1F}
+.freq-row .farea{font-size:10px;color:#B5A69A;margin-right:8px;min-width:48px}
+.freq-opts{display:flex;gap:4px}
+.freq-o{width:32px;height:28px;border-radius:6px;border:1.5px solid #E8DDD0;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;color:#B5A69A;transition:all .15s;background:#FAF8F5}
+.freq-o input{position:absolute;opacity:0}
+.freq-o:has(input:checked){background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600}
+/* ===== Declutter Rating ===== */
+.rating-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #EDE4DA}
+.rating-row:last-child{border-bottom:none}
+.rating-row .q{flex:1;font-size:13px;color:#3D2B1F;padding-top:2px}
+.rating-opts{display:flex;gap:4px;flex-shrink:0}
+.rating-o{width:32px;height:30px;border-radius:6px;border:1.5px solid #E8DDD0;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;color:#B5A69A;transition:all .15s;background:#FAF8F5}
+.rating-o input{position:absolute;opacity:0}
+.rating-o:has(input:checked){background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600}
+.rating-labels{display:flex;justify-content:space-between;font-size:10px;color:#B5A69A;padding:0 2px;margin-bottom:6px}
+/* ===== Score Card ===== */
+.score-card{background:linear-gradient(135deg,#3D2B1F,#8B6B4A);border-radius:14px;padding:20px;color:#fff;text-align:center;margin-bottom:12px}
+.score-card .big{font-size:44px;font-weight:700;color:#C4956A}
+.score-card .lbl{font-size:13px;color:rgba(255,255,255,.5);margin-top:2px}
+.score-card .tags{display:flex;justify-content:center;gap:12px;margin-top:10px;font-size:11px;flex-wrap:wrap}
+.score-card .tags span{color:rgba(255,255,255,.4)}
+.score-card .tags .on{color:#C4956A;font-weight:600}
+.score-card .type{display:inline-block;margin-top:10px;padding:6px 20px;border-radius:8px;background:rgba(255,255,255,.1);font-size:13px}
+/* ===== Button ===== */
+.btn-group{display:flex;gap:10px;margin-top:18px}
+.btn{flex:1;padding:13px 20px;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center}
+.btn-primary{background:linear-gradient(135deg,#3D2B1F,#8B6B4A);color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(139,107,74,.25)}
+.btn-gold{background:linear-gradient(135deg,#C4956A,#D4A574);color:#3D2B1F}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(196,149,106,.3)}
+.btn-outline{background:transparent;border:2px solid #E8DDD0;color:#8B6B4A}
+.btn-outline:hover{border-color:#8B6B4A;color:#8B6B4A}
+/* ===== Thank You ===== */
+#ty{display:none;min-height:100vh;background:linear-gradient(135deg,#3D2B1F,#5C4033,#8B6B4A);color:#fff;padding:60px 28px;text-align:center;align-items:center;justify-content:center;flex-direction:column}
+#ty.show{display:flex}
+#ty .icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#C4956A,#D4A574);display:flex;align-items:center;justify-content:center;font-size:30px;color:#3D2B1F;margin-bottom:20px;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+#ty h2{font-size:26px;margin-bottom:8px}
+#ty p{color:rgba(255,255,255,.5);max-width:320px;line-height:1.7;margin-bottom:28px;font-size:14px}
+#ty .flow-box{background:rgba(255,255,255,.06);border-radius:12px;padding:18px 24px;width:100%;max-width:320px;margin-bottom:24px;text-align:left;font-size:13px;line-height:2}
+#ty .flow-box .tt{color:#C4956A;font-weight:600;margin-bottom:4px}
+#ty .flow-box div{color:rgba(255,255,255,.5)}
+/* ===== Toast ===== */
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%)translateY(80px);background:#3D2B1F;color:#fff;padding:12px 24px;border-radius:10px;font-size:13px;z-index:999;opacity:0;transition:all .4s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%)translateY(0)}
+/* ===== Responsive ===== */
+@media(max-width:480px){
+  .opt-grid{grid-template-columns:1fr 1fr}
+  .opt-grid-3{grid-template-columns:1fr 1fr 1fr}
+  .area-grid{grid-template-columns:1fr 1fr}
+  .cover h1{font-size:28px}
+  .sev-wrap{gap:4px}
+  .sev-btn{font-size:11px;padding:6px 0}
+  .freq-opts{gap:3px}
+  .freq-o{width:28px;height:24px;font-size:10px}
+}
+/* ===== Anim ===== */
+.fade-in{animation:fadeIn .5s ease forwards}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+</style>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<div class="top-bar" id="topBar">
+  <span class="step-label" id="stepLabel">01 / 08</span>
+  <div class="step-indicator" id="stepDots"></div>
+</div>
+
+<!-- ===== COVER ===== -->
+<section class="cover" id="sec-cover">
+  <div class="logo-wrap">収</div>
+  <h1>定制收纳 · <em>数据采集</em></h1>
+  <p class="sub">通过科学的数据采集体系，深度了解您的生活习惯与收纳需求，为您打造真正量身定制的收纳系统</p>
+  <div class="stats">
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">评估模块</div></div>
+    <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">数据维度</div></div>
+    <div class="stat-item"><div class="stat-num">12min</div><div class="stat-label">预计时长</div></div>
+  </div>
+  <button class="btn-start" onclick="start()"><span>开始填写</span> <span>→</span></button>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 1: 基本信息 -->
+<!-- ================================================================== -->
+<section id="sec-1">
+  <div class="s-head"><div class="num">01</div><h2>基本信息</h2><span class="s-tag">基础建档</span></div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">👤</span> 联系信息</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>您的姓名 <span class="req">*</span></label><input type="text" id="name" placeholder="如：张女士"></div>
+      <div class="fg"><label>手机号 <span class="req">*</span></label><input type="tel" id="phone" placeholder="方便设计师联系"></div>
+    </div>
+    <div class="fg"><label>微信</label><input type="text" id="wechat" placeholder="选填，方便发送方案文件"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🏠</span> 住宅信息</div>
+    <div class="fg"><label>住宅类型</label>
+      <div class="opt-grid">
+        <label class="opt-card"><input type="radio" name="ht" value="公寓"><span>公寓</span></label>
+        <label class="opt-card"><input type="radio" name="ht" value="平层"><span>平层</span></label>
+        <label class="opt-card"><input type="radio" name="ht" value="别墅"><span>别墅</span></label>
+        <label class="opt-card"><input type="radio" name="ht" value="LOFT"><span>LOFT</span></label>
+        <label class="opt-card" style="grid-column:span 2"><input type="radio" name="ht" value="其他"><span>其他</span></label>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>面积 (㎡)</label><input type="number" id="area" placeholder="如：120" min="0"></div>
+      <div class="fg"><label>常住人口</label><input type="number" id="pop" placeholder="人数" min="1" value="3"></div>
+    </div>
+    <div class="fg"><label>房屋状态</label>
+      <div class="opt-grid-3">
+        <label class="opt-card"><input type="radio" name="hs" value="新房装修"><span>新房装修</span></label>
+        <label class="opt-card"><input type="radio" name="hs" value="旧房改造"><span>旧房改造</span></label>
+        <label class="opt-card"><input type="radio" name="hs" value="已入住"><span>已入住</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">📋</span> 项目概况</div>
+    <div class="fg"><label>项目类型</label>
+      <div class="opt-grid">
+        <label class="opt-card"><input type="radio" name="pt" value="全屋收纳"><span>全屋收纳</span><div class="sub">整体设计</div></label>
+        <label class="opt-card"><input type="radio" name="pt" value="空间改造"><span>空间改造</span><div class="sub">局部优化</div></label>
+        <label class="opt-card"><input type="radio" name="pt" value="单品定制"><span>单品定制</span><div class="sub">单柜设计</div></label>
+        <label class="opt-card"><input type="radio" name="pt" value="搬家收纳"><span>搬家收纳</span><div class="sub">全屋整理</div></label>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>预算范围</label>
+        <div class="opt-grid" style="grid-template-columns:1fr">
+          <label class="opt-card"><input type="radio" name="bg" value="1万以内"><span>1万以内</span></label>
+          <label class="opt-card"><input type="radio" name="bg" value="1-3万"><span>1-3万</span></label>
+          <label class="opt-card"><input type="radio" name="bg" value="3-5万"><span>3-5万</span></label>
+          <label class="opt-card"><input type="radio" name="bg" value="5万以上"><span>5万以上</span></label>
+        </div>
+      </div>
+      <div class="fg"><label>信息来源</label>
+        <div class="opt-grid" style="grid-template-columns:1fr">
+          <label class="opt-card"><input type="radio" name="src" value="朋友推荐"><span>朋友推荐</span></label>
+          <label class="opt-card"><input type="radio" name="src" value="小红书"><span>小红书</span></label>
+          <label class="opt-card"><input type="radio" name="src" value="抖音"><span>抖音</span></label>
+          <label class="opt-card"><input type="radio" name="src" value="公众号/其他"><span>公众号/其他</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-group"><button class="btn btn-primary" onclick="go(2)">下一步 →</button></div>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 2: 体态参数 + 人体尺寸参考图 -->
+<!-- ================================================================== -->
+<section id="sec-2">
+  <div class="s-head"><div class="num">02</div><h2>体态参数</h2><span class="s-tag">黄金区计算依据</span></div>
+
+  <!-- ILLUSTRATION: 人体尺寸参考 — 放大精装版 -->
+  <div class="ill-card">
+    <svg viewBox="0 0 600 440" style="background:#3D2B1F;width:100%">
+      <defs>
+        <linearGradient id="gb1a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D1F14"/><stop offset="100%" stop-color="#4A3428"/></linearGradient>
+        <linearGradient id="gz1a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8FA88A" stop-opacity=".35"/><stop offset="100%" stop-color="#8FA88A" stop-opacity=".12"/></linearGradient>
+        <linearGradient id="hd1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#D4A574"/><stop offset="100%" stop-color="#C4956A"/></linearGradient>
+      </defs>
+      <rect width="600" height="440" fill="url(#gb1a)"/>
+
+      <!-- ===== 标题区 ===== -->
+      <rect x="0" y="0" width="600" height="46" fill="rgba(0,0,0,.25)"/>
+      <text x="300" y="20" text-anchor="middle" fill="#D4A574" font-size="15" font-weight="bold" font-family="Microsoft YaHei,sans-serif">📐 人体尺寸参考 · 黄金收纳区定位</text>
+      <text x="300" y="38" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="10" font-family="Microsoft YaHei,sans-serif">身高 · 臂长 · 肩宽 → 决定柜体黄金区高度、挂杆位置、层板进深</text>
+
+      <!-- ===== 左侧：人体示意 + 尺寸标注 ===== -->
+      <g transform="translate(30,55)">
+        <!-- 身高标尺背景线 -->
+        <line x1="110" y1="0" x2="110" y2="370" stroke="rgba(255,255,255,.08)" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- = 女性 silhouette = -->
+        <g transform="translate(10,20)">
+          <!-- 头部 -->
+          <ellipse cx="28" cy="14" rx="14" ry="16" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+          <!-- 身体 -->
+          <path d="M28 30 L28 105" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+          <!-- 肩膀 -->
+          <path d="M10 50 L46 50" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>
+          <!-- 手臂 -->
+          <path d="M10 50 L4 85" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+          <path d="M46 50 L52 85" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+          <!-- 腿 -->
+          <path d="M28 105 L28 170" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+          <!-- 底部标注 -->
+          <text x="28" y="186" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">女 160cm</text>
+
+          <!-- 尺寸标注线：身高 -->
+          <line x1="-6" y1="0" x2="-6" y2="170" stroke="#D4A574" stroke-width="1" stroke-dasharray="3,2"/>
+          <line x1="-12" y1="0" x2="-2" y2="0" stroke="#D4A574" stroke-width="1"/>
+          <line x1="-12" y1="170" x2="-2" y2="170" stroke="#D4A574" stroke-width="1"/>
+          <text x="-8" y="88" text-anchor="middle" fill="#D4A574" font-size="9" font-weight="bold" font-family="Microsoft YaHei,sans-serif" transform="rotate(-90,-8,88)">160cm</text>
+        </g>
+
+        <!-- = 男性 silhouette = -->
+        <g transform="translate(80,5)">
+          <ellipse cx="30" cy="15" rx="15" ry="17" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+          <path d="M30 32 L30 120" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+          <path d="M8 53 L52 53" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>
+          <path d="M8 53 L2 90" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+          <path d="M52 53 L58 90" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+          <path d="M30 120 L30 195" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+          <text x="30" y="212" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">男 175cm</text>
+
+          <!-- 尺寸标注 -->
+          <line x1="-6" y1="0" x2="-6" y2="195" stroke="#D4A574" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="-8" y="100" text-anchor="middle" fill="#D4A574" font-size="9" font-weight="bold" font-family="Microsoft YaHei,sans-serif" transform="rotate(-90,-8,100)">175cm</text>
+
+          <!-- 肩宽标注 -->
+          <path d="M8 53 L-20 35" stroke="rgba(212,165,116,.4)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="-28" y="42" text-anchor="end" fill="#D4A574" font-size="9" font-family="Microsoft YaHei,sans-serif">肩宽</text>
+
+          <!-- 臂长标注 -->
+          <path d="M58 53 L80 35" stroke="rgba(212,165,116,.4)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="88" y="42" text-anchor="start" fill="#D4A574" font-size="9" font-family="Microsoft YaHei,sans-serif">臂长</text>
+        </g>
+      </g>
+
+      <!-- ===== 右侧：柜体分区图（放大） ===== -->
+      <g transform="translate(295,55)">
+        <!-- 柜体外框 -->
+        <rect x="0" y="0" width="270" height="370" rx="6" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.1)" stroke-width="1.5"/>
+
+        <!-- 顶部装饰线 -->
+        <rect x="0" y="0" width="270" height="24" rx="6" fill="rgba(212,165,116,.1)"/>
+        <text x="135" y="16" text-anchor="middle" fill="#D4A574" font-size="10" font-weight="bold" font-family="Microsoft YaHei,sans-serif">定制柜体纵向分区</text>
+
+        <!-- = 区域1: 低频区 >185cm -->
+        <rect x="8" y="28" width="254" height="48" rx="4" fill="rgba(192,120,74,.12)" stroke="#C0784A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <text x="135" y="43" text-anchor="middle" fill="#C0784A" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">● 低频区 ＞185cm</text>
+        <text x="135" y="58" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="10" font-family="Microsoft YaHei,sans-serif">换季被褥 / 行李箱 / 不常用杂物</text>
+        <text x="135" y="70" text-anchor="middle" fill="rgba(192,120,74,.4)" font-size="9" font-family="Microsoft YaHei,sans-serif">需要凳子或踮脚取放</text>
+
+        <!-- = 区域2: 次黄金区 160-185cm -->
+        <rect x="8" y="80" width="254" height="58" rx="4" fill="rgba(196,149,106,.1)" stroke="#C4956A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <text x="135" y="96" text-anchor="middle" fill="#C4956A" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">◆ 次黄金区 160-185cm</text>
+        <text x="135" y="112" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="10" font-family="Microsoft YaHei,sans-serif">备品 / 低频文件 / 次常用物品</text>
+        <text x="135" y="126" text-anchor="middle" fill="rgba(196,149,106,.4)" font-size="9" font-family="Microsoft YaHei,sans-serif">稍抬手可及 · 轻微踮脚</text>
+
+        <!-- = 区域3: ★ 黄金区 65-160cm -->
+        <rect x="8" y="142" width="254" height="130" rx="4" fill="url(#gz1a)" stroke="#8FA88A" stroke-width="2" stroke-dasharray="6,3"/>
+        <!-- 内发光效果 -->
+        <rect x="14" y="148" width="242" height="118" rx="3" fill="none" stroke="rgba(143,168,138,.15)" stroke-width="1"/>
+        <text x="135" y="168" text-anchor="middle" fill="#8FA88A" font-size="20" font-weight="bold" font-family="Microsoft YaHei,sans-serif">★ 黄 金 区 ★</text>
+        <text x="135" y="190" text-anchor="middle" fill="#8FA88A" font-size="16" font-weight="bold" font-family="Microsoft YaHei,sans-serif">65 — 160cm</text>
+        <text x="135" y="210" text-anchor="middle" fill="rgba(143,168,138,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">站立伸手可及 · 最便捷取放</text>
+        <text x="135" y="226" text-anchor="middle" fill="rgba(143,168,138,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">高频物品专属区域</text>
+
+        <!-- 挂杆示意 -->
+        <line x1="20" y1="200" x2="250" y2="200" stroke="#D4A574" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="20" cy="200" r="4" fill="#D4A574"/>
+        <circle cx="250" cy="200" r="4" fill="#D4A574"/>
+        <text x="135" y="248" text-anchor="middle" fill="rgba(212,165,116,.5)" font-size="9" font-family="Microsoft YaHei,sans-serif">━━━ 挂杆位置 (身高×1.2) ━━━</text>
+
+        <!-- 衣服Icon示意 -->
+        <g transform="translate(60,250)" opacity=".6">
+          <rect x="0" y="0" width="12" height="16" rx="2" fill="none" stroke="#D4A574" stroke-width="1"/>
+          <path d="M3 0 L3 -6 L9 -6 L9 0" fill="none" stroke="#D4A574" stroke-width="1"/>
+        </g>
+        <text x="80" y="264" fill="rgba(212,165,116,.4)" font-size="8" font-family="Microsoft YaHei,sans-serif">当季衣物</text>
+
+        <g transform="translate(130,250)" opacity=".6">
+          <rect x="0" y="0" width="14" height="14" rx="2" fill="none" stroke="#D4A574" stroke-width="1"/>
+          <line x1="3" y1="2" x2="3" y2="12" stroke="#D4A574" stroke-width=".8"/>
+          <line x1="7" y1="2" x2="7" y2="12" stroke="#D4A574" stroke-width=".8"/>
+          <line x1="11" y1="2" x2="11" y2="12" stroke="#D4A574" stroke-width=".8"/>
+        </g>
+        <text x="152" y="264" fill="rgba(212,165,116,.4)" font-size="8" font-family="Microsoft YaHei,sans-serif">折叠衣物</text>
+
+        <g transform="translate(195,250)" opacity=".6">
+          <circle cx="6" cy="6" r="6" fill="none" stroke="#D4A574" stroke-width="1"/>
+          <circle cx="6" cy="6" r="2" fill="#D4A574"/>
+        </g>
+        <text x="210" y="264" fill="rgba(212,165,116,.4)" font-size="8" font-family="Microsoft YaHei,sans-serif">配饰</text>
+
+        <!-- = 区域4: 次黄金区 40-65cm -->
+        <rect x="8" y="276" width="254" height="42" rx="4" fill="rgba(196,149,106,.1)" stroke="#C4956A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <text x="135" y="292" text-anchor="middle" fill="#C4956A" font-size="10" font-weight="bold" font-family="Microsoft YaHei,sans-serif">◆ 次黄金区 40-65cm</text>
+        <text x="135" y="308" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="10" font-family="Microsoft YaHei,sans-serif">需蹲下 · 低频囤货</text>
+
+        <!-- = 区域5: 低频区 <40cm -->
+        <rect x="8" y="322" width="254" height="42" rx="4" fill="rgba(192,120,74,.12)" stroke="#C0784A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <text x="135" y="338" text-anchor="middle" fill="#C0784A" font-size="10" font-weight="bold" font-family="Microsoft YaHei,sans-serif">● 低频区 ＜40cm</text>
+        <text x="135" y="354" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="10" font-family="Microsoft YaHei,sans-serif">大件重物 / 囤货仓储 / 不常用工具</text>
+      </g>
+
+      <!-- ===== 底部连接箭头 ===== -->
+      <path d="M225 240 Q260 250 290 240" fill="none" stroke="rgba(212,165,116,.3)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ar1a)"/>
+      <defs><marker id="ar1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="rgba(212,165,116,.3)"/></marker></defs>
+
+      <!-- ===== 底部黄金区公式 ===== -->
+      <rect x="30" y="410" width="540" height="24" rx="6" fill="rgba(143,168,138,.08)"/>
+      <text x="300" y="426" text-anchor="middle" fill="rgba(143,168,138,.5)" font-size="10" font-family="Microsoft YaHei,sans-serif">黄金区 = 最矮身高 × 0.4 ~ 最高身高 × 0.9  ·  挂杆高度 = 最常用者身高 × 1.2</text>
+    </svg>
+    <div class="cap">身高/臂长/肩宽 → 决定柜体黄金区高度、挂杆位置、层板进深 — 黄金区=最矮身高×0.4~最高身高×0.9</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">👨‍👩‍👧‍👦</span> 家庭成员体态参数</div>
+    <p style="font-size:12px;color:#B5A69A;margin-bottom:12px">每个人都需要填写，数据越精确，柜体越贴合</p>
+    <div id="members"></div>
+  </div>
+
+  <div class="btn-group"><button class="btn btn-outline" onclick="back(1)">← 上一步</button><button class="btn btn-primary" onclick="go(3)">下一步 →</button></div>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 3: 痛点诊断 + 黄金区域图 -->
+<!-- ================================================================== -->
+<section id="sec-3">
+  <div class="s-head"><div class="num">03</div><h2>痛点诊断</h2><span class="s-tag">问题空间定位</span></div>
+
+  <!-- ILLUSTRATION: 黄金区域 — 放大精装版 -->
+  <div class="ill-card">
+    <svg viewBox="0 0 600 300" style="background:#3D2B1F;width:100%">
+      <defs>
+        <linearGradient id="ga2b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D1F14"/><stop offset="100%" stop-color="#4A3428"/></linearGradient>
+        <linearGradient id="gol2b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8FA88A" stop-opacity=".35"/><stop offset="100%" stop-color="#8FA88A" stop-opacity=".12"/></linearGradient>
+      </defs>
+      <rect width="600" height="300" fill="url(#ga2b)"/>
+
+      <!-- 标题 -->
+      <rect x="0" y="0" width="600" height="34" fill="rgba(0,0,0,.2)"/>
+      <text x="300" y="16" text-anchor="middle" fill="#D4A574" font-size="14" font-weight="bold" font-family="Microsoft YaHei,sans-serif">🏠 收纳黄金区域分区 · 人体工学柜体设计</text>
+      <text x="300" y="30" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="9" font-family="Microsoft YaHei,sans-serif">黄金区决定每日使用物品的位置 — 痛点 = 黄金区放错了东西</text>
+
+      <!-- ===== 左侧：站立人像示意 ===== -->
+      <g transform="translate(20,42)">
+        <!-- 身高纵向参考线 -->
+        <line x1="40" y1="0" x2="40" y2="245" stroke="rgba(255,255,255,.06)" stroke-width="1" stroke-dasharray="3,4"/>
+
+        <!-- 人体 -->
+        <circle cx="40" cy="18" r="16" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+        <path d="M40 34 L40 110" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+        <path d="M18 54 L62 54" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>
+        <path d="M18 54 L10 86" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <path d="M62 54 L70 86" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <path d="M40 110 L40 196" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+
+        <!-- 手部伸展示意 — 向上够 -->
+        <path d="M62 54 L72 28" stroke="rgba(212,165,116,.5)" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <circle cx="72" cy="26" r="4" fill="rgba(212,165,116,.4)"/>
+        <text x="78" y="24" fill="rgba(212,165,116,.5)" font-size="8" font-family="Microsoft YaHei,sans-serif">抬手取</text>
+
+        <!-- 手部伸展示意 — 向下够 -->
+        <path d="M18 54 L8 80" stroke="rgba(212,165,116,.5)" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <circle cx="7" cy="82" r="4" fill="rgba(212,165,116,.4)"/>
+        <text x="-28" y="78" fill="rgba(212,165,116,.5)" font-size="8" font-family="Microsoft YaHei,sans-serif">蹲下取</text>
+
+        <!-- 黄金区标记范围 (人侧) -->
+        <rect x="10" y="70" width="60" height="60" rx="4" fill="none" stroke="#8FA88A" stroke-width="1.5" stroke-dasharray="4,2" opacity=".6"/>
+        <text x="40" y="104" text-anchor="middle" fill="#8FA88A" font-size="8" font-weight="bold" font-family="Microsoft YaHei,sans-serif">黄金区</text>
+
+        <text x="40" y="218" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">身高 160-175cm</text>
+        <text x="40" y="232" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="9" font-family="Microsoft YaHei,sans-serif">站立视线与手臂</text>
+      </g>
+
+      <!-- ===== 中间：柜体分区（加高） ===== -->
+      <g transform="translate(130,42)" font-family="Microsoft YaHei,sans-serif">
+        <!-- 柜体背景 -->
+        <rect x="0" y="0" width="140" height="248" rx="6" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.08)" stroke-width="1.5"/>
+
+        <!-- 人体高度标尺左侧 -->
+        <line x1="-16" y1="0" x2="-16" y2="248" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+        <text x="-22" y="124" text-anchor="end" fill="rgba(255,255,255,.15)" font-size="8" font-family="Microsoft YaHei,sans-serif" transform="rotate(-90,-22,124)">180cm</text>
+
+        <!-- Zone 1: >185cm -->
+        <rect x="6" y="0" width="128" height="44" rx="4" fill="rgba(192,120,74,.15)" stroke="#C0784A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <circle cx="16" cy="12" r="4" fill="#C0784A" opacity=".6"/>
+        <text x="24" y="15" fill="#C0784A" font-size="10" font-weight="bold">低频区</text>
+        <text x="24" y="30" fill="rgba(255,255,255,.35)" font-size="8">&gt;185cm</text>
+        <text x="100" y="15" fill="rgba(255,255,255,.25)" font-size="8">换季被褥</text>
+        <text x="100" y="30" fill="rgba(255,255,255,.25)" font-size="8">行李箱</text>
+
+        <!-- Zone 2: 160-185cm -->
+        <rect x="6" y="48" width="128" height="52" rx="4" fill="rgba(196,149,106,.12)" stroke="#C4956A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <text x="16" y="62" fill="#C4956A" font-size="10" font-weight="bold">◆ 次黄金区</text>
+        <text x="16" y="78" fill="rgba(255,255,255,.35)" font-size="8">160-185cm</text>
+        <text x="90" y="62" fill="rgba(255,255,255,.25)" font-size="8">备品</text>
+        <text x="90" y="78" fill="rgba(255,255,255,.25)" font-size="8">低频文件</text>
+
+        <!-- Zone 3: ★ 黄金区 65-160cm -->
+        <rect x="6" y="104" width="128" height="84" rx="4" fill="url(#gol2b)" stroke="#8FA88A" stroke-width="2" stroke-dasharray="6,3"/>
+        <text x="70" y="124" text-anchor="middle" fill="#8FA88A" font-size="18" font-weight="bold">★ 黄金区</text>
+        <text x="70" y="146" text-anchor="middle" fill="#8FA88A" font-size="13" font-weight="bold">65-160cm</text>
+        <text x="70" y="166" text-anchor="middle" fill="rgba(143,168,138,.7)" font-size="10">★ 伸手可及</text>
+        <text x="70" y="182" text-anchor="middle" fill="rgba(143,168,138,.5)" font-size="10">高频物品专属</text>
+
+        <!-- Zone 4: 40-65cm -->
+        <rect x="6" y="192" width="128" height="30" rx="4" fill="rgba(196,149,106,.12)" stroke="#C4956A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <text x="16" y="206" fill="#C4956A" font-size="9" font-weight="bold">◆ 次黄金区</text>
+        <text x="90" y="206" fill="rgba(255,255,255,.3)" font-size="8">40-65cm</text>
+
+        <!-- Zone 5: <40cm -->
+        <rect x="6" y="226" width="128" height="18" rx="4" fill="rgba(192,120,74,.15)" stroke="#C0784A" stroke-width=".8" stroke-dasharray="4,2"/>
+        <text x="16" y="239" fill="#C0784A" font-size="8" font-weight="bold">● 低频区 &lt;40cm</text>
+      </g>
+
+      <!-- ===== 右侧：策略说明卡片 ===== -->
+      <g transform="translate(290,42)">
+        <rect x="0" y="0" width="290" height="248" rx="8" fill="rgba(0,0,0,.15)" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+
+        <!-- 标题 -->
+        <text x="145" y="22" text-anchor="middle" fill="#D4A574" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">📋 各区域设计策略</text>
+        <line x1="20" y1="30" x2="270" y2="30" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+
+        <!-- 策略条目 -->
+        <g transform="translate(14,44)" font-family="Microsoft YaHei,sans-serif">
+          <!-- 低频区 1 -->
+          <rect x="0" y="0" width="262" height="44" rx="6" fill="rgba(192,120,74,.08)"/>
+          <rect x="0" y="0" width="4" height="44" rx="2" fill="#C0784A"/>
+          <text x="14" y="16" fill="#C0784A" font-size="10" font-weight="bold">⬆ 低频区 ＞185cm / ＜40cm</text>
+          <text x="14" y="32" fill="rgba(255,255,255,.4)" font-size="9">换季物品、囤货、大件行李箱 — 使用频率低，可接受蹲下或踮脚</text>
+
+          <!-- 次黄金区 2 -->
+          <rect x="0" y="50" width="262" height="44" rx="6" fill="rgba(196,149,106,.08)"/>
+          <rect x="0" y="50" width="4" height="44" rx="2" fill="#C4956A"/>
+          <text x="14" y="66" fill="#C4956A" font-size="10" font-weight="bold">⬆ 次黄金区 160-185cm / 40-65cm</text>
+          <text x="14" y="82" fill="rgba(255,255,255,.4)" font-size="9">备品、低频文件、备用物资 — 每月使用，稍微抬手或弯腰即可</text>
+
+          <!-- 黄金区 3 -->
+          <rect x="0" y="100" width="262" height="64" rx="6" fill="rgba(143,168,138,.08)"/>
+          <rect x="0" y="100" width="4" height="64" rx="2" fill="#8FA88A"/>
+          <text x="14" y="116" fill="#8FA88A" font-size="10" font-weight="bold">⭐ 黄金区 65-160cm（最佳取放范围）</text>
+          <text x="14" y="132" fill="rgba(255,255,255,.5)" font-size="9">站立时在肩膀至臀部之间，伸手可及</text>
+          <text x="14" y="148" fill="rgba(255,255,255,.35)" font-size="9">→ 每日高频物品（当季衣物、护肤、常用厨具）</text>
+
+          <!-- 原则 -->
+          <rect x="0" y="174" width="262" height="64" rx="6" fill="rgba(212,165,116,.06)"/>
+          <rect x="0" y="174" width="4" height="64" rx="2" fill="#D4A574"/>
+          <text x="14" y="190" fill="#D4A574" font-size="10" font-weight="bold">🎯 黄金法则</text>
+          <text x="14" y="206" fill="rgba(255,255,255,.4)" font-size="9">使用频率越高 → 越靠近黄金区中心位置</text>
+          <text x="14" y="222" fill="rgba(255,255,255,.3)" font-size="9">痛点 = 高频物品放在了低频区（每天都在弯腰找）</text>
+        </g>
+      </g>
+    </svg>
+    <div class="cap">黄金区（65-160cm）= 站立伸手可及的最佳收纳范围 — 高频物品必须放在黄金区</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🚨</span> 哪些空间让您最困扰？<span style="font-size:11px;color:#B5A69A;font-weight:400">（可多选）</span></div>
+    <div class="area-grid">
+      <label class="area-chk"><input type="checkbox" value="玄关" onchange="painCheck()">玄关 <span class="badge">入户</span></label>
+      <label class="area-chk"><input type="checkbox" value="客厅" onchange="painCheck()">客厅 <span class="badge">起居</span></label>
+      <label class="area-chk"><input type="checkbox" value="餐厅" onchange="painCheck()">餐厅 <span class="badge">用餐</span></label>
+      <label class="area-chk"><input type="checkbox" value="厨房" onchange="painCheck()">厨房 <span class="badge">烹饪</span></label>
+      <label class="area-chk"><input type="checkbox" value="主卧" onchange="painCheck()">主卧 <span class="badge">睡眠</span></label>
+      <label class="area-chk"><input type="checkbox" value="次卧/儿童房" onchange="painCheck()">次卧/儿童房 <span class="badge">儿童</span></label>
+      <label class="area-chk"><input type="checkbox" value="卫生间" onchange="painCheck()">卫生间 <span class="badge">洗浴</span></label>
+      <label class="area-chk"><input type="checkbox" value="阳台/洗衣" onchange="painCheck()">阳台/洗衣 <span class="badge">家务</span></label>
+      <label class="area-chk"><input type="checkbox" value="书房" onchange="painCheck()">书房 <span class="badge">工作</span></label>
+      <label class="area-chk"><input type="checkbox" value="储物间" onchange="painCheck()">储物间 <span class="badge">仓储</span></label>
+    </div>
+  </div>
+
+  <div id="painDetail"></div>
+
+  <div class="btn-group"><button class="btn btn-outline" onclick="back(2)">← 上一步</button><button class="btn btn-primary" onclick="go(4)">下一步 →</button></div>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 4: 断舍离指数 + 标尺图 -->
+<!-- ================================================================== -->
+<section id="sec-4">
+  <div class="s-head"><div class="num">04</div><h2>断舍离指数</h2><span class="s-tag">物品筛选策略</span></div>
+
+  <!-- ILLUSTRATION: 断舍离指数 — 放大精装版 -->
+  <div class="ill-card">
+    <svg viewBox="0 0 600 230" style="background:#3D2B1F;width:100%">
+      <defs>
+        <linearGradient id="gbg3b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D1F14"/><stop offset="100%" stop-color="#4A3428"/></linearGradient>
+      </defs>
+      <rect width="600" height="230" fill="url(#gbg3b)"/>
+
+      <!-- 标题 -->
+      <rect x="0" y="0" width="600" height="30" fill="rgba(0,0,0,.18)"/>
+      <text x="300" y="13" text-anchor="middle" fill="#D4A574" font-size="13" font-weight="bold" font-family="Microsoft YaHei,sans-serif">📊 断舍离指数标尺 · 客户类型诊断</text>
+      <text x="300" y="26" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="9" font-family="Microsoft YaHei,sans-serif">13道题评估您对物品的态度 决定收纳策略偏向</text>
+
+      <!-- ===== 标尺主体 ===== -->
+      <g transform="translate(40,42)">
+        <!-- 背景轨道 -->
+        <rect x="0" y="0" width="520" height="26" rx="13" fill="rgba(0,0,0,.25)"/>
+
+        <!-- 四段色彩 -->
+        <rect x="2" y="2" width="110" height="22" rx="11" fill="#C0784A" opacity=".9"/>
+        <rect x="112" y="2" width="140" height="22" fill="#C4956A" opacity=".85"/>
+        <rect x="252" y="2" width="140" height="22" fill="#D4A574" opacity=".8"/>
+        <rect x="392" y="2" width="126" height="22" rx="11" fill="#8FA88A" opacity=".85"/>
+
+        <!-- 刻度标记 -->
+        <line x1="0" y1="0" x2="0" y2="30" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+        <text x="0" y="38" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="8" font-family="Microsoft YaHei,sans-serif">0</text>
+        <line x1="130" y1="0" x2="130" y2="30" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+        <text x="130" y="38" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="8" font-family="Microsoft YaHei,sans-serif">25</text>
+        <line x1="260" y1="0" x2="260" y2="30" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+        <text x="260" y="38" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="8" font-family="Microsoft YaHei,sans-serif">40</text>
+        <line x1="390" y1="0" x2="390" y2="30" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+        <text x="390" y="38" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="8" font-family="Microsoft YaHei,sans-serif">55</text>
+        <line x1="520" y1="0" x2="520" y2="30" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+        <text x="520" y="38" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="8" font-family="Microsoft YaHei,sans-serif">65</text>
+
+        <!-- 类别标签 (在标尺上方) -->
+        <text x="57" y="-6" text-anchor="middle" fill="#C0784A" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">重度保留型</text>
+        <text x="182" y="-6" text-anchor="middle" fill="#C4956A" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">适度保留型</text>
+        <text x="322" y="-6" text-anchor="middle" fill="#D4A574" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">倾向精简型</text>
+        <text x="457" y="-6" text-anchor="middle" fill="#8FA88A" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">极简主义者</text>
+      </g>
+
+      <!-- ===== 下方：各类型特征说明卡片 ===== -->
+      <g transform="translate(20,98)" font-family="Microsoft YaHei,sans-serif">
+        <!-- 卡1: 重度保留 -->
+        <rect x="0" y="0" width="135" height="90" rx="6" fill="rgba(192,120,74,.08)" stroke="rgba(192,120,74,.2)" stroke-width="1"/>
+        <text x="8" y="16" fill="#C0784A" font-size="9" font-weight="bold">📦 重度保留 0-25分</text>
+        <line x1="8" y1="22" x2="127" y2="22" stroke="rgba(192,120,74,.15)" stroke-width=".8"/>
+        <text x="8" y="36" fill="rgba(255,255,255,.45)" font-size="8">什么都不舍得扔</text>
+        <text x="8" y="50" fill="rgba(255,255,255,.45)" font-size="8">包装盒都留着</text>
+        <text x="8" y="64" fill="rgba(255,255,255,.45)" font-size="8">「以后能用上」</text>
+        <text x="8" y="80" fill="#C0784A" font-size="8" font-weight="bold">→ 增加储物容量</text>
+
+        <!-- 卡2: 适度保留 -->
+        <rect x="142" y="0" width="135" height="90" rx="6" fill="rgba(196,149,106,.08)" stroke="rgba(196,149,106,.2)" stroke-width="1"/>
+        <text x="8" y="16" fill="#C4956A" font-size="9" font-weight="bold">📦 适度保留 26-40分</text>
+        <line x1="8" y1="22" x2="127" y2="22" stroke="rgba(196,149,106,.15)" stroke-width=".8"/>
+        <text x="8" y="36" fill="rgba(255,255,255,.45)" font-size="8">定期筛选旧物</text>
+        <text x="8" y="50" fill="rgba(255,255,255,.45)" font-size="8">有保留习惯</text>
+        <text x="8" y="64" fill="rgba(255,255,255,.45)" font-size="8">但也舍得淘汰</text>
+        <text x="8" y="80" fill="#C4956A" font-size="8" font-weight="bold">→ 封闭+开放结合</text>
+
+        <!-- 卡3: 倾向精简 -->
+        <rect x="284" y="0" width="135" height="90" rx="6" fill="rgba(212,165,116,.08)" stroke="rgba(212,165,116,.2)" stroke-width="1"/>
+        <text x="8" y="16" fill="#D4A574" font-size="9" font-weight="bold">📦 倾向精简 41-55分</text>
+        <line x1="8" y1="22" x2="127" y2="22" stroke="rgba(212,165,116,.15)" stroke-width=".8"/>
+        <text x="8" y="36" fill="rgba(255,255,255,.45)" font-size="8">定期断舍离</text>
+        <text x="8" y="50" fill="rgba(255,255,255,.45)" font-size="8">注重生活品质</text>
+        <text x="8" y="64" fill="rgba(255,255,255,.45)" font-size="8">不喜欢杂物堆积</text>
+        <text x="8" y="80" fill="#D4A574" font-size="8" font-weight="bold">→ 展示性收纳</text>
+
+        <!-- 卡4: 极简 -->
+        <rect x="426" y="0" width="150" height="90" rx="6" fill="rgba(143,168,138,.08)" stroke="rgba(143,168,138,.2)" stroke-width="1"/>
+        <text x="8" y="16" fill="#8FA88A" font-size="9" font-weight="bold">📦 极简主义 56-65分</text>
+        <line x1="8" y1="22" x2="142" y2="22" stroke="rgba(143,168,138,.15)" stroke-width=".8"/>
+        <text x="8" y="36" fill="rgba(255,255,255,.45)" font-size="8">物品极少而精</text>
+        <text x="8" y="50" fill="rgba(255,255,255,.45)" font-size="8">每件都是必需</text>
+        <text x="8" y="64" fill="rgba(255,255,255,.45)" font-size="8">追求空间留白</text>
+        <text x="8" y="80" fill="#8FA88A" font-size="8" font-weight="bold">→ 极简留白设计</text>
+      </g>
+
+      <!-- 底部提示 -->
+      <text x="300" y="221" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="9" font-family="Microsoft YaHei,sans-serif">评分越低  增加储物容量 | 评分越高  注重展示留白</text>
+    </svg>
+    <div class="cap">13道题评估您对物品的态度  四类诊断结果  匹配不同收纳设计策略</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">📦</span> 物品保留倾向 <span style="font-size:11px;color:#B5A69A;font-weight:400">1=保留 → 5=丢弃</span></div>
+    <div class="rating-labels"><span>总是留着</span><span>视情况</span><span>果断丢弃</span></div>
+    <div id="keepQs"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="ico">🛒</span> 购买习惯 <span style="font-size:11px;color:#B5A69A;font-weight:400">1=从不 → 5=总是</span></div>
+    <div class="rating-labels"><span>从不</span><span>偶尔</span><span>总是</span></div>
+    <div id="buyQs"></div>
+  </div>
+
+  <div class="score-card">
+    <div class="lbl">您的断舍离指数</div>
+    <div class="big" id="dScore">0</div>
+    <div class="tags"><span class="on" id="dTag1">≤25 重度保留</span><span id="dTag2">26-40 适度保留</span><span id="dTag3">41-55 倾向精简</span><span id="dTag4">56-65 极简主义</span></div>
+    <div class="type" id="dType">请完成评估</div>
+  </div>
+  <div class="card" style="background:#FDF8F3;border:1px solid #C4956A">
+    <div class="card-title" style="color:#8B6B4A">💡 设计策略建议</div>
+    <p id="dAdvice" style="font-size:13px;color:#666;line-height:1.7">完成上方评估后将显示推荐策略。</p>
+  </div>
+
+  <div class="btn-group"><button class="btn btn-outline" onclick="back(3)">← 上一步</button><button class="btn btn-primary" onclick="go(5)">下一步 →</button></div>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 5: 使用频率 + 矩阵图 -->
+<!-- ================================================================== -->
+<section id="sec-5">
+  <div class="s-head"><div class="num">05</div><h2>使用频率</h2><span class="s-tag">物品存放位置决策</span></div>
+
+  <div class="ill-card">
+    <svg viewBox="0 0 600 240" style="background:#3D2B1F;width:100%">
+      <defs>
+        <linearGradient id="gbf4b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D1F14"/><stop offset="100%" stop-color="#4A3428"/></linearGradient>
+      </defs>
+      <rect width="600" height="240" fill="url(#gbf4b)"/>
+
+      <!-- 标题 -->
+      <rect x="0" y="0" width="600" height="30" fill="rgba(0,0,0,.18)"/>
+      <text x="300" y="13" text-anchor="middle" fill="#D4A574" font-size="13" font-weight="bold" font-family="Microsoft YaHei,sans-serif">🔄 使用频率 → 存放位置对照</text>
+      <text x="300" y="26" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="9" font-family="Microsoft YaHei,sans-serif">频率越高越靠近黄金区（65-160cm）伸手可及</text>
+
+      <!-- ===== 左侧：柜体 + 频率映射 ===== -->
+      <g transform="translate(18,38)" font-family="Microsoft YaHei,sans-serif">
+        <!-- 柜体外框 -->
+        <rect x="0" y="0" width="200" height="194" rx="6" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.06)" stroke-width="1.2"/>
+
+        <!-- 层板分隔线 -->
+        <line x1="6" y1="46" x2="194" y2="46" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+        <line x1="6" y1="100" x2="194" y2="100" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+        <line x1="6" y1="150" x2="194" y2="150" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+
+        <!-- 低频区：顶部 -->
+        <rect x="4" y="2" width="192" height="42" rx="4" fill="rgba(192,120,74,.1)"/>
+        <text x="100" y="18" text-anchor="middle" fill="#C0784A" font-size="9" font-weight="bold">● 低频区 (每月/每季)</text>
+        <text x="100" y="34" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8">换季衣物 · 囤货 · 不常用物品</text>
+
+        <!-- 次黄金区：中上 -->
+        <rect x="4" y="50" width="92" height="48" rx="4" fill="rgba(196,149,106,.1)"/>
+        <text x="50" y="68" text-anchor="middle" fill="#C4956A" font-size="8" font-weight="bold">◆ 次黄金区</text>
+        <text x="50" y="84" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8">(每周) 床品·配饰</text>
+
+        <!-- 黄金区：中心最大 -->
+        <rect x="4" y="102" width="192" height="46" rx="4" fill="rgba(143,168,138,.15)" stroke="#8FA88A" stroke-width="1.5"/>
+        <text x="100" y="120" text-anchor="middle" fill="#8FA88A" font-size="14" font-weight="bold">★ 黄金区 (每日)</text>
+        <text x="100" y="138" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="9">当季衣物 · 护肤 · 常穿鞋 · 手机钥匙</text>
+
+        <!-- 次黄金区：下部 -->
+        <rect x="4" y="152" width="92" height="40" rx="4" fill="rgba(196,149,106,.1)"/>
+        <text x="50" y="168" text-anchor="middle" fill="#C4956A" font-size="8" font-weight="bold">◆ 下区</text>
+        <text x="50" y="182" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8">重物·囤货</text>
+
+        <!-- 底部低频区 -->
+        <rect x="100" y="152" width="96" height="40" rx="4" fill="rgba(192,120,74,.1)"/>
+        <text x="148" y="168" text-anchor="middle" fill="#C0784A" font-size="8" font-weight="bold">● 底部</text>
+        <text x="148" y="182" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8">大件行李箱·工具</text>
+      </g>
+
+      <!-- ===== 右侧：频率对照表格（放大） ===== -->
+      <g transform="translate(230,38)" font-family="Microsoft YaHei,sans-serif">
+        <!-- 表头 -->
+        <rect x="0" y="0" width="168" height="26" rx="4" fill="rgba(212,165,116,.12)"/>
+        <text x="40" y="17" text-anchor="middle" fill="#D4A574" font-size="10" font-weight="bold">频率</text>
+        <text x="120" y="17" text-anchor="middle" fill="#D4A574" font-size="10" font-weight="bold">存放原则</text>
+
+        <!-- 每日 -->
+        <rect x="0" y="30" width="38" height="40" rx="3" fill="rgba(143,168,138,.18)"/>
+        <text x="19" y="55" text-anchor="middle" fill="#8FA88A" font-size="10" font-weight="bold">每日</text>
+        <rect x="42" y="30" width="126" height="40" rx="3" fill="rgba(143,168,138,.08)"/>
+        <text x="105" y="48" text-anchor="middle" fill="rgba(255,255,255,.45)" font-size="9">黄金区 65-160cm</text>
+        <text x="105" y="62" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8">站立伸手可及 · 不弯腰</text>
+
+        <!-- 每周 -->
+        <rect x="0" y="74" width="38" height="40" rx="3" fill="rgba(196,149,106,.18)"/>
+        <text x="19" y="99" text-anchor="middle" fill="#C4956A" font-size="10" font-weight="bold">每周</text>
+        <rect x="42" y="74" width="126" height="40" rx="3" fill="rgba(196,149,106,.08)"/>
+        <text x="105" y="92" text-anchor="middle" fill="rgba(255,255,255,.45)" font-size="9">次黄金区</text>
+        <text x="105" y="106" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8">轻微弯腰或抬手</text>
+
+        <!-- 每月 -->
+        <rect x="0" y="118" width="38" height="40" rx="3" fill="rgba(212,165,116,.18)"/>
+        <text x="19" y="143" text-anchor="middle" fill="#D4A574" font-size="10" font-weight="bold">每月</text>
+        <rect x="42" y="118" width="126" height="40" rx="3" fill="rgba(212,165,116,.08)"/>
+        <text x="105" y="136" text-anchor="middle" fill="rgba(255,255,255,.45)" font-size="9">中层区 / 顶部</text>
+        <text x="105" y="150" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8">需辅助工具取放</text>
+
+        <!-- 每季/低频 -->
+        <rect x="0" y="162" width="38" height="28" rx="3" fill="rgba(192,120,74,.18)"/>
+        <text x="19" y="180" text-anchor="middle" fill="#C0784A" font-size="9" font-weight="bold">低频</text>
+        <rect x="42" y="162" width="126" height="28" rx="3" fill="rgba(192,120,74,.08)"/>
+        <text x="105" y="180" text-anchor="middle" fill="rgba(255,255,255,.45)" font-size="9">底层 / 顶层储物区</text>
+      </g>
+
+      <!-- ===== 右侧：示例物品标签 ===== -->
+      <g transform="translate(410,38)" font-family="Microsoft YaHei,sans-serif">
+        <rect x="0" y="0" width="175" height="194" rx="6" fill="rgba(0,0,0,.12)" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <text x="88" y="16" text-anchor="middle" fill="#D4A574" font-size="9" font-weight="bold">示例物品</text>
+
+        <!-- 每日标签 -->
+        <rect x="6" y="24" width="163" height="16" rx="4" fill="rgba(143,168,138,.1)"/>
+        <text x="12" y="35" fill="#8FA88A" font-size="8" font-weight="bold">高频</text>
+        <text x="88" y="35" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">当季衣物·护肤·钥匙·手机</text>
+
+        <!-- 每周标签 -->
+        <rect x="6" y="68" width="163" height="16" rx="4" fill="rgba(196,149,106,.1)"/>
+        <text x="12" y="79" fill="#C4956A" font-size="8" font-weight="bold">中频</text>
+        <text x="88" y="79" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">床品·配饰·备用护肤品</text>
+
+        <!-- 每月标签 -->
+        <rect x="6" y="112" width="163" height="16" rx="4" fill="rgba(212,165,116,.1)"/>
+        <text x="12" y="123" fill="#D4A574" font-size="8" font-weight="bold">低频</text>
+        <text x="88" y="123" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">换季内衣·特殊场合衣物</text>
+
+        <!-- 每季标签 -->
+        <rect x="6" y="156" width="163" height="16" rx="4" fill="rgba(192,120,74,.1)"/>
+        <text x="12" y="167" fill="#C0784A" font-size="8" font-weight="bold">低频</text>
+        <text x="88" y="167" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">被褥·行李箱·工具·囤货</text>
+      </g>
+    </svg>
+    <div class="cap">使用频率决定物品的存放位置 — 每日使用品必须放在黄金区（65-160cm）</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🔄</span> 请为以下物品标注使用频率</div>
+    <div id="freqList"></div>
+  </div>
+
+  <div class="btn-group"><button class="btn btn-outline" onclick="back(4)">← 上一步</button><button class="btn btn-primary" onclick="go(6)">下一步 →</button></div>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 6: 动线分析 -->
+<!-- ================================================================== -->
+<section id="sec-6">
+  <div class="s-head"><div class="num">06</div><h2>动线分析</h2><span class="s-tag">行为轨迹优化</span></div>
+
+  <div class="ill-card">
+    <svg viewBox="0 0 600 260" style="background:#3D2B1F;width:100%">
+      <defs>
+        <linearGradient id="gbm5b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D1F14"/><stop offset="100%" stop-color="#4A3428"/></linearGradient>
+        <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#D4A574"/></marker>
+        <marker id="ar2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#8FA88A"/></marker>
+      </defs>
+      <rect width="600" height="260" fill="url(#gbm5b)"/>
+
+      <!-- 标题 -->
+      <rect x="0" y="0" width="600" height="30" fill="rgba(0,0,0,.18)"/>
+      <text x="300" y="13" text-anchor="middle" fill="#D4A574" font-size="14" font-weight="bold" font-family="Microsoft YaHei,sans-serif">🚶 家居动线分析 · 收纳触点</text>
+      <text x="300" y="26" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="9" font-family="Microsoft YaHei,sans-serif">物品应存放在动线路径上，减少无效折返</text>
+
+      <!-- ===== 上：清晨动线 ===== -->
+      <g transform="translate(0,36)" font-family="Microsoft YaHei,sans-serif">
+        <!-- 区域背景 -->
+        <rect x="12" y="0" width="576" height="105" rx="8" fill="rgba(212,165,116,.04)" stroke="rgba(212,165,116,.08)" stroke-width="1"/>
+
+        <!-- 标签 -->
+        <rect x="20" y="6" width="80" height="20" rx="6" fill="rgba(212,165,116,.12)"/>
+        <text x="60" y="20" text-anchor="middle" fill="#D4A574" font-size="10" font-weight="bold">☀ 清晨动线</text>
+
+        <!-- 房间示意图 + 动线箭头 -->
+        <!-- 卧室 -->
+        <g transform="translate(20,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(212,165,116,.08)" stroke="#D4A574" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(212,165,116,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#D4A574" font-size="10">🛏</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">① 起床</text>
+          <!-- 收纳触点 -->
+          <text x="29" y="54" text-anchor="middle" fill="rgba(212,165,116,.4)" font-size="7">衣柜黄金区</text>
+        </g>
+        <!-- 箭头 -->
+        <path d="M82 56 L104 56" stroke="#D4A574" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#arb)"/>
+
+        <!-- 卫生间 -->
+        <g transform="translate(108,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(212,165,116,.08)" stroke="#D4A574" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(212,165,116,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#D4A574" font-size="10">🚿</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">② 洗漱</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(212,165,116,.4)" font-size="7">镜柜·面盆柜</text>
+        </g>
+        <!-- 箭头 -->
+        <path d="M170 56 L192 56" stroke="#D4A574" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#arb)"/>
+
+        <!-- 衣帽间 -->
+        <g transform="translate(196,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(212,165,116,.08)" stroke="#D4A574" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(212,165,116,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#D4A574" font-size="10">👔</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">③ 更衣</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(212,165,116,.4)" font-size="7">黄金区拿取</text>
+        </g>
+        <!-- 箭头 -->
+        <path d="M258 56 L280 56" stroke="#D4A574" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#arb)"/>
+
+        <!-- 餐厅 -->
+        <g transform="translate(284,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(212,165,116,.08)" stroke="#D4A574" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(212,165,116,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#D4A574" font-size="10">🍳</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">④ 早餐</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(212,165,116,.4)" font-size="7">餐边柜</text>
+        </g>
+        <!-- 箭头 -->
+        <path d="M346 56 L368 56" stroke="#D4A574" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#arb)"/>
+
+        <!-- 玄关 -->
+        <g transform="translate(372,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(212,165,116,.08)" stroke="#D4A574" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(212,165,116,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#D4A574" font-size="10">🚪</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">⑤ 出门</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(212,165,116,.4)" font-size="7">一站式托盘</text>
+        </g>
+
+        <!-- 右侧设计要点 -->
+        <g transform="translate(448,34)">
+          <rect x="0" y="0" width="130" height="66" rx="6" fill="rgba(212,165,116,.06)" stroke="rgba(212,165,116,.12)" stroke-width=".8"/>
+          <text x="65" y="16" text-anchor="middle" fill="#D4A574" font-size="8" font-weight="bold">🎯 设计要点</text>
+          <text x="8" y="30" fill="rgba(255,255,255,.4)" font-size="7">▸ 衣柜黄金区拿取衣物</text>
+          <text x="8" y="42" fill="rgba(255,255,255,.4)" font-size="7">▸ 出门前一站式检查</text>
+          <text x="8" y="54" fill="rgba(255,255,255,.4)" font-size="7">▸ 钥匙/手机固定位置</text>
+        </g>
+      </g>
+
+      <!-- ===== 下：晚间动线 ===== -->
+      <g transform="translate(0,148)" font-family="Microsoft YaHei,sans-serif">
+        <!-- 区域背景 -->
+        <rect x="12" y="0" width="576" height="105" rx="8" fill="rgba(143,168,138,.04)" stroke="rgba(143,168,138,.08)" stroke-width="1"/>
+
+        <rect x="20" y="6" width="80" height="20" rx="6" fill="rgba(143,168,138,.12)"/>
+        <text x="60" y="20" text-anchor="middle" fill="#8FA88A" font-size="10" font-weight="bold">🌙 晚间动线</text>
+
+        <!-- 玄关 -->
+        <g transform="translate(20,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(143,168,138,.08)" stroke="#8FA88A" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(143,168,138,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#8FA88A" font-size="10">🚪</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">① 回家</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(143,168,138,.4)" font-size="7">外套挂放</text>
+        </g>
+        <path d="M82 56 L104 56" stroke="#8FA88A" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#ar2b)"/>
+
+        <!-- 客厅 -->
+        <g transform="translate(108,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(143,168,138,.08)" stroke="#8FA88A" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(143,168,138,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#8FA88A" font-size="10">🛋</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">② 玄关/客厅</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(143,168,138,.4)" font-size="7">放包·换鞋</text>
+        </g>
+        <path d="M170 56 L192 56" stroke="#8FA88A" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#ar2b)"/>
+
+        <!-- 衣帽间 -->
+        <g transform="translate(196,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(143,168,138,.08)" stroke="#8FA88A" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(143,168,138,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#8FA88A" font-size="10">👕</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">③ 换居家服</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(143,168,138,.4)" font-size="7">次净衣区</text>
+        </g>
+        <path d="M258 56 L280 56" stroke="#8FA88A" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#ar2b)"/>
+
+        <!-- 厨房 -->
+        <g transform="translate(284,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(143,168,138,.08)" stroke="#8FA88A" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(143,168,138,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#8FA88A" font-size="10">🍲</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">④ 晚餐</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(143,168,138,.4)" font-size="7">厨房收纳</text>
+        </g>
+        <path d="M346 56 L368 56" stroke="#8FA88A" stroke-width="2" stroke-dasharray="5,2" marker-end="url(#ar2b)"/>
+
+        <!-- 卧室 -->
+        <g transform="translate(372,34)">
+          <rect x="0" y="0" width="58" height="44" rx="6" fill="rgba(143,168,138,.08)" stroke="#8FA88A" stroke-width="1"/>
+          <rect x="20" y="6" width="18" height="18" rx="3" fill="rgba(143,168,138,.15)"/>
+          <text x="29" y="18" text-anchor="middle" fill="#8FA88A" font-size="10">🌙</text>
+          <text x="29" y="38" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8">⑤ 就寝</text>
+          <text x="29" y="54" text-anchor="middle" fill="rgba(143,168,138,.4)" font-size="7">睡衣触手可及</text>
+        </g>
+
+        <!-- 右侧设计要点 -->
+        <g transform="translate(448,34)">
+          <rect x="0" y="0" width="130" height="66" rx="6" fill="rgba(143,168,138,.06)" stroke="rgba(143,168,138,.12)" stroke-width=".8"/>
+          <text x="65" y="16" text-anchor="middle" fill="#8FA88A" font-size="8" font-weight="bold">🎯 设计要点</text>
+          <text x="8" y="30" fill="rgba(255,255,255,.4)" font-size="7">▸ 玄关柜挂外套</text>
+          <text x="8" y="42" fill="rgba(255,255,255,.4)" font-size="7">▸ 次净衣区就近挂放</text>
+          <text x="8" y="54" fill="rgba(255,255,255,.4)" font-size="7">▸ 卧室收纳动线最短</text>
+        </g>
+      </g>
+    </svg>
+    <div class="cap">清晨动线：起床→洗漱→更衣→早餐→出门 ｜ 晚间动线：回家→玄关→换衣→晚餐→就寝 — 收纳触点在动线路径上</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">☀️</span> 清晨动线（起床→出门）</div>
+    <div class="fg"><label>您的动线流程</label>
+      <div class="opt-grid">
+        <label class="opt-card"><input type="radio" name="morning" value="起床→洗漱→更衣→早餐→出门"><span>标准型</span><div class="sub">洗漱→更衣→早餐→出门</div></label>
+        <label class="opt-card"><input type="radio" name="morning" value="起床→更衣→洗漱→早餐→出门"><span>先换衣型</span><div class="sub">先换衣再洗漱</div></label>
+        <label class="opt-card"><input type="radio" name="morning" value="起床→洗漱→早餐→更衣→出门"><span>先早餐型</span><div class="sub">先早餐再更衣</div></label>
+        <label class="opt-card"><input type="radio" name="morning" value="其他"><span>其他动线</span></label>
+      </div>
+    </div>
+    <div class="fg"><label>出门前最常找不到什么？</label>
+      <div class="opt-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <label class="opt-card"><input type="checkbox" name="lost" value="钥匙">🔑 钥匙</label>
+        <label class="opt-card"><input type="checkbox" name="lost" value="手机">📱 手机</label>
+        <label class="opt-card"><input type="checkbox" name="lost" value="口罩">😷 口罩</label>
+        <label class="opt-card"><input type="checkbox" name="lost" value="包包">👜 包包</label>
+        <label class="opt-card"><input type="checkbox" name="lost" value="眼镜">👓 眼镜</label>
+        <label class="opt-card"><input type="checkbox" name="lost" value="其他">❓ 其他</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🌙</span> 晚间动线（回家→就寝）</div>
+    <div class="fg"><label>您的动线流程</label>
+      <div class="opt-grid">
+        <label class="opt-card"><input type="radio" name="evening" value="回家→玄关→换衣→晚餐→洗漱→就寝"><span>标准型</span><div class="sub">换居家服→晚餐→洗漱</div></label>
+        <label class="opt-card"><input type="radio" name="evening" value="回家→玄关→洗漱→换衣→晚餐→就寝"><span>先洗漱型</span><div class="sub">进门先洗漱</div></label>
+        <label class="opt-card"><input type="radio" name="evening" value="回家→玄关→晚餐→洗漱→换衣→就寝"><span>后更衣型</span><div class="sub">睡前才换衣</div></label>
+        <label class="opt-card"><input type="radio" name="evening" value="其他"><span>其他动线</span></label>
+      </div>
+    </div>
+    <div class="fg"><label>回家后外套/包包放在哪？</label>
+      <div class="opt-grid" style="grid-template-columns:1fr 1fr">
+        <label class="opt-card"><input type="radio" name="coat" value="玄关柜"><span>玄关柜</span></label>
+        <label class="opt-card"><input type="radio" name="coat" value="客厅沙发"><span>客厅沙发</span></label>
+        <label class="opt-card"><input type="radio" name="coat" value="卧室"><span>卧室</span></label>
+        <label class="opt-card"><input type="radio" name="coat" value="随处放"><span>随处放</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="background:#FDF8F3;border:1px solid #8B6B4A">
+    <div class="card-title" style="color:#8B6B4A">📐 动线设计原则</div>
+    <div style="font-size:12px;color:#666;line-height:1.9">
+      <div><strong style="color:#8B6B4A">最短路径</strong> — 高频物品在动线最短处</div>
+      <div><strong style="color:#8B6B4A">动作连贯</strong> — 相关动作集中存放</div>
+      <div><strong style="color:#8B6B4A">双手释放</strong> — 无需额外开门</div>
+      <div><strong style="color:#8B6B4A">视觉可达</strong> — 高频物品一眼可见</div>
+    </div>
+  </div>
+
+  <div class="btn-group"><button class="btn btn-outline" onclick="back(5)">← 上一步</button><button class="btn btn-primary" onclick="go(7)">下一步 →</button></div>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 7: 生活习惯 -->
+<!-- ================================================================== -->
+<section id="sec-7">
+  <div class="s-head"><div class="num">07</div><h2>生活习惯</h2><span class="s-tag">深度行为画像</span></div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">⏰</span> 作息与用餐</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>起床时间</label>
+        <select id="wake" style="width:100%;padding:10px 12px;border:2px solid #E8DDD0;border-radius:10px;font-size:13px;outline:none;background:#FAF8F5;appearance:none;font-family:inherit">
+          <option>6:00前</option><option>6:00-7:00</option><option>7:00-8:00</option><option>8:00-9:00</option><option>9:00后</option>
+        </select>
+      </div>
+      <div class="fg"><label>就寝时间</label>
+        <select id="sleep" style="width:100%;padding:10px 12px;border:2px solid #E8DDD0;border-radius:10px;font-size:13px;outline:none;background:#FAF8F5;appearance:none;font-family:inherit">
+          <option>22:00前</option><option>22:00-23:00</option><option>23:00-00:00</option><option>00:00后</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>在家用早餐？</label>
+        <div class="opt-grid-3">
+          <label class="opt-card"><input type="radio" name="bf" value="每天"><span>每天</span></label>
+          <label class="opt-card"><input type="radio" name="bf" value="偶尔"><span>偶尔</span></label>
+          <label class="opt-card"><input type="radio" name="bf" value="很少"><span>很少</span></label>
+        </div>
+      </div>
+      <div class="fg"><label>在家做晚餐？</label>
+        <div class="opt-grid-3">
+          <label class="opt-card"><input type="radio" name="df" value="每天"><span>每天</span></label>
+          <label class="opt-card"><input type="radio" name="df" value="偶尔"><span>偶尔</span></label>
+          <label class="opt-card"><input type="radio" name="df" value="很少"><span>很少</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="fg"><label>是否居家办公？</label>
+      <div class="opt-grid-3">
+        <label class="opt-card"><input type="radio" name="wfh" value="全职"><span>全职</span></label>
+        <label class="opt-card"><input type="radio" name="wfh" value="偶尔"><span>偶尔</span></label>
+        <label class="opt-card"><input type="radio" name="wfh" value="从不"><span>从不</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🛍️</span> 购物习惯</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>采购频率</label>
+        <select id="shopFreq" style="width:100%;padding:10px 12px;border:2px solid #E8DDD0;border-radius:10px;font-size:13px;outline:none;background:#FAF8F5;appearance:none;font-family:inherit">
+          <option>每天买</option><option>2-3天/次</option><option>每周采购</option><option>每两周</option>
+        </select>
+      </div>
+      <div class="fg"><label>买菜渠道</label>
+        <select id="shopCh" style="width:100%;padding:10px 12px;border:2px solid #E8DDD0;border-radius:10px;font-size:13px;outline:none;background:#FAF8F5;appearance:none;font-family:inherit">
+          <option>菜市场</option><option>超市</option><option>生鲜APP</option><option>混合</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label>您属于哪种购物风格？</label>
+      <div class="opt-grid-3">
+        <label class="opt-card"><input type="radio" name="hoard" value="经常囤货"><span>经常囤货</span><div class="sub">有安全感</div></label>
+        <label class="opt-card"><input type="radio" name="hoard" value="适当囤货"><span>适当囤货</span><div class="sub">适量备用</div></label>
+        <label class="opt-card"><input type="radio" name="hoard" value="用完再买"><span>用完再买</span><div class="sub">随用随买</div></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🧹</span> 收纳偏好</div>
+    <div class="fg"><label>您的收纳风格</label>
+      <div class="opt-grid-3">
+        <label class="opt-card"><input type="radio" name="org" value="随手归位"><span>随手归位</span></label>
+        <label class="opt-card"><input type="radio" name="org" value="集中整理"><span>集中整理</span></label>
+        <label class="opt-card"><input type="radio" name="org" value="需要督促"><span>需要督促</span></label>
+      </div>
+    </div>
+    <div class="fg"><label>对折叠衣物的态度</label>
+      <div class="opt-grid-3">
+        <label class="opt-card"><input type="radio" name="fold" value="仔细折叠"><span>仔细叠</span></label>
+        <label class="opt-card"><input type="radio" name="fold" value="简单叠"><span>简单叠</span></label>
+        <label class="opt-card"><input type="radio" name="fold" value="尽量挂"><span>尽量挂</span></label>
+      </div>
+    </div>
+    <div class="fg"><label>可视化收纳（透明盒/标签）</label>
+      <div class="opt-grid-3">
+        <label class="opt-card"><input type="radio" name="vis" value="非常喜欢"><span>非常喜欢</span></label>
+        <label class="opt-card"><input type="radio" name="vis" value="可以接受"><span>可以接受</span></label>
+        <label class="opt-card"><input type="radio" name="vis" value="不喜欢"><span>不喜欢</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">❤️</span> 兴趣与特殊需求</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label>运动频率</label>
+        <select id="fit" style="width:100%;padding:10px 12px;border:2px solid #E8DDD0;border-radius:10px;font-size:13px;outline:none;background:#FAF8F5;appearance:none;font-family:inherit">
+          <option>每天运动</option><option>每周2-3次</option><option>偶尔</option><option>基本不运动</option>
+        </select>
+      </div>
+      <div class="fg"><label>是否有宠物</label>
+        <div class="opt-grid">
+          <label class="opt-card"><input type="radio" name="pet" value="猫"><span>猫</span></label>
+          <label class="opt-card"><input type="radio" name="pet" value="狗"><span>狗</span></label>
+          <label class="opt-card"><input type="radio" name="pet" value="其他"><span>其他</span></label>
+          <label class="opt-card"><input type="radio" name="pet" value="无"><span>无</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="fg"><label>爱好/收藏（可多选）</label>
+      <div class="opt-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <label class="opt-card"><input type="checkbox" value="茶具/咖啡">🍵 茶具/咖啡</label>
+        <label class="opt-card"><input type="checkbox" value="红酒">🍷 红酒</label>
+        <label class="opt-card"><input type="checkbox" value="书籍">📚 书籍</label>
+        <label class="opt-card"><input type="checkbox" value="手办/潮玩">🎨 手办/潮玩</label>
+        <label class="opt-card"><input type="checkbox" value="运动装备">🏃 运动装备</label>
+        <label class="opt-card"><input type="checkbox" value="其他">✨ 其他</label>
+      </div>
+    </div>
+    <div class="fg"><label>其他特殊需求</label>
+      <input type="text" id="special" placeholder="如：行动不便、孕妇、左撇子、老人护理等">
+    </div>
+  </div>
+
+  <div class="btn-group"><button class="btn btn-outline" onclick="back(6)">← 上一步</button><button class="btn btn-primary" onclick="go(8)">下一步 →</button></div>
+</section>
+
+<!-- ================================================================== -->
+<!-- STEP 8: 提交确认 -->
+<!-- ================================================================== -->
+<section id="sec-8">
+  <div class="s-head"><div class="num">08</div><h2>确认提交</h2><span class="s-tag">数据汇总</span></div>
+
+  <div class="ill-card">
+    <svg viewBox="0 0 600 160" style="background:#3D2B1F;width:100%">
+      <defs>
+        <linearGradient id="gbp6b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D1F14"/><stop offset="100%" stop-color="#4A3428"/></linearGradient>
+      </defs>
+      <rect width="600" height="160" fill="url(#gbp6b)"/>
+
+      <!-- 标题 -->
+      <rect x="0" y="0" width="600" height="28" fill="rgba(0,0,0,.18)"/>
+      <text x="300" y="12" text-anchor="middle" fill="#D4A574" font-size="13" font-weight="bold" font-family="Microsoft YaHei,sans-serif">定制收纳设计全流程</text>
+      <text x="300" y="24" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="9" font-family="Microsoft YaHei,sans-serif">5步科学流程 · 数据驱动设计</text>
+
+      <!-- ===== 流程步骤排版：更宽更大 ===== -->
+      <g transform="translate(6,34)" font-family="Microsoft YaHei,sans-serif">
+
+        <!-- Step 1 -->
+        <g transform="translate(0,0)">
+          <rect x="0" y="0" width="106" height="58" rx="8" fill="rgba(212,165,116,.08)" stroke="#D4A574" stroke-width="1.2"/>
+          <circle cx="18" cy="18" r="12" fill="rgba(212,165,116,.15)"/>
+          <text x="18" y="22" text-anchor="middle" fill="#D4A574" font-size="12" font-weight="bold">①</text>
+          <text x="63" y="20" text-anchor="middle" fill="#D4A574" font-size="10" font-weight="bold">数据采集</text>
+          <text x="63" y="38" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="8">体态·痛点·频率</text>
+          <text x="63" y="50" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8">动线·生活习惯</text>
+        </g>
+        <!-- 箭头 -->
+        <g transform="translate(108,20)">
+          <line x1="0" y1="10" x2="18" y2="10" stroke="rgba(212,165,116,.4)" stroke-width="2" stroke-dasharray="4,2"/>
+          <polygon points="20,10 13,6 13,14" fill="rgba(212,165,116,.4)"/>
+        </g>
+
+        <!-- Step 2 -->
+        <g transform="translate(130,0)">
+          <rect x="0" y="0" width="106" height="58" rx="8" fill="rgba(196,149,106,.08)" stroke="#C4956A" stroke-width="1.2"/>
+          <circle cx="18" cy="18" r="12" fill="rgba(196,149,106,.15)"/>
+          <text x="18" y="22" text-anchor="middle" fill="#C4956A" font-size="12" font-weight="bold">②</text>
+          <text x="63" y="20" text-anchor="middle" fill="#C4956A" font-size="10" font-weight="bold">分析诊断</text>
+          <text x="63" y="38" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="8">大数据画像</text>
+          <text x="63" y="50" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8">痛点定位</text>
+        </g>
+        <!-- 箭头 -->
+        <g transform="translate(238,20)">
+          <line x1="0" y1="10" x2="18" y2="10" stroke="rgba(196,149,106,.4)" stroke-width="2" stroke-dasharray="4,2"/>
+          <polygon points="20,10 13,6 13,14" fill="rgba(196,149,106,.4)"/>
+        </g>
+
+        <!-- Step 3 -->
+        <g transform="translate(260,0)">
+          <rect x="0" y="0" width="106" height="58" rx="8" fill="rgba(143,168,138,.08)" stroke="#8FA88A" stroke-width="1.2"/>
+          <circle cx="18" cy="18" r="12" fill="rgba(143,168,138,.15)"/>
+          <text x="18" y="22" text-anchor="middle" fill="#8FA88A" font-size="12" font-weight="bold">③</text>
+          <text x="63" y="20" text-anchor="middle" fill="#8FA88A" font-size="10" font-weight="bold">方案设计</text>
+          <text x="63" y="38" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="8">人体工学柜体</text>
+          <text x="63" y="50" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8">3D效果图</text>
+        </g>
+        <!-- 箭头 -->
+        <g transform="translate(368,20)">
+          <line x1="0" y1="10" x2="18" y2="10" stroke="rgba(143,168,138,.4)" stroke-width="2" stroke-dasharray="4,2"/>
+          <polygon points="20,10 13,6 13,14" fill="rgba(143,168,138,.4)"/>
+        </g>
+
+        <!-- Step 4 -->
+        <g transform="translate(390,0)">
+          <rect x="0" y="0" width="106" height="58" rx="8" fill="rgba(192,120,74,.08)" stroke="#C0784A" stroke-width="1.2"/>
+          <circle cx="18" cy="18" r="12" fill="rgba(192,120,74,.15)"/>
+          <text x="18" y="22" text-anchor="middle" fill="#C0784A" font-size="12" font-weight="bold">④</text>
+          <text x="63" y="20" text-anchor="middle" fill="#C0784A" font-size="10" font-weight="bold">安装落地</text>
+          <text x="63" y="38" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="8">专业施工</text>
+          <text x="63" y="50" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8">验收交付</text>
+        </g>
+        <!-- 箭头 -->
+        <g transform="translate(498,20)">
+          <line x1="0" y1="10" x2="18" y2="10" stroke="rgba(192,120,74,.4)" stroke-width="2" stroke-dasharray="4,2"/>
+          <polygon points="20,10 13,6 13,14" fill="rgba(192,120,74,.4)"/>
+        </g>
+
+        <!-- Step 5 -->
+        <g transform="translate(520,0)">
+          <rect x="0" y="0" width="74" height="58" rx="8" fill="rgba(196,149,106,.08)" stroke="#C4956A" stroke-width="1.2"/>
+          <circle cx="18" cy="18" r="12" fill="rgba(196,149,106,.15)"/>
+          <text x="18" y="22" text-anchor="middle" fill="#C4956A" font-size="12" font-weight="bold">⑤</text>
+          <text x="48" y="20" text-anchor="middle" fill="#C4956A" font-size="9" font-weight="bold">持续</text>
+          <text x="48" y="34" text-anchor="middle" fill="#C4956A" font-size="9" font-weight="bold">优化</text>
+          <text x="48" y="50" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8">回访</text>
+        </g>
+
+        <!-- ===== 底部进度条 ===== -->
+        <rect x="0" y="68" width="594" height="4" rx="2" fill="rgba(255,255,255,.06)"/>
+        <rect x="0" y="68" width="119" height="4" rx="2" fill="rgba(212,165,116,.5)"/>
+        <rect x="119" y="68" width="119" height="4" rx="2" fill="rgba(196,149,106,.5)"/>
+        <rect x="238" y="68" width="119" height="4" rx="2" fill="rgba(143,168,138,.5)"/>
+        <rect x="357" y="68" width="119" height="4" rx="2" fill="rgba(192,120,74,.5)"/>
+        <rect x="476" y="68" width="118" height="4" rx="2" fill="rgba(196,149,106,.5)"/>
+      </g>
+
+      <!-- ===== 底部公式 ===== -->
+      <g transform="translate(30,110)" font-family="Microsoft YaHei,sans-serif">
+        <rect x="0" y="0" width="540" height="44" rx="8" fill="rgba(0,0,0,.15)" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+
+        <!-- 公式图标 -->
+        <text x="270" y="16" text-anchor="middle" fill="#D4A574" font-size="9" font-weight="bold">收纳设计 = 人体工学 × 行为数据 × 空间效率 × 美学设计</text>
+
+        <!-- 四要素标注 -->
+        <rect x="20" y="26" width="108" height="12" rx="4" fill="rgba(212,165,116,.1)"/>
+        <text x="74" y="35" text-anchor="middle" fill="rgba(212,165,116,.5)" font-size="7">📐 身高·臂长·肩宽</text>
+
+        <rect x="136" y="26" width="108" height="12" rx="4" fill="rgba(196,149,106,.1)"/>
+        <text x="190" y="35" text-anchor="middle" fill="rgba(196,149,106,.5)" font-size="7">📊 痛点·频率·动线</text>
+
+        <rect x="252" y="26" width="108" height="12" rx="4" fill="rgba(143,168,138,.1)"/>
+        <text x="306" y="35" text-anchor="middle" fill="rgba(143,168,138,.5)" font-size="7">🏠 空间利用率</text>
+
+        <rect x="368" y="26" width="160" height="12" rx="4" fill="rgba(192,120,74,.1)"/>
+        <text x="448" y="35" text-anchor="middle" fill="rgba(192,120,74,.5)" font-size="7">🎨 色彩·材质·比例</text>
+      </g>
+    </svg>
+    <div class="cap">您的数据将驱动整个设计流程 — 5步科学闭环，确保方案精准贴合您的需求</div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#FDF8F3,#fff);border:2px solid #8B6B4A">
+    <div class="card-title" style="color:#8B6B4A">📊 提交汇总</div>
+    <div style="font-size:13px;color:#666;line-height:2.2">
+      <div><span style="display:inline-block;width:80px;color:#C4956A">👤 客户</span> <span id="sumName">未填写</span></div>
+      <div><span style="display:inline-block;width:80px;color:#C4956A">👨‍👩‍👧‍👦 成员</span> <span id="sumMembers">0</span> 人</div>
+      <div><span style="display:inline-block;width:80px;color:#C4956A">🚨 痛点</span> <span id="sumPain">0</span> 个区域</div>
+      <div><span style="display:inline-block;width:80px;color:#C4956A">📊 指数</span> <span id="sumScore">0</span> 分</div>
+      <div><span style="display:inline-block;width:80px;color:#C4956A">🔄 物品</span> <span id="sumFreq">0</span> 项已标注</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🔒</span> 隐私保护</div>
+    <p style="font-size:12px;color:#B5A69A;line-height:1.7">您提供的数据仅用于本次收纳设计，严格保密，绝不外泄。提交后设计师将在24小时内与您联系。</p>
+  </div>
+
+  <div class="btn-group" style="flex-direction:column;gap:10px">
+    <button class="btn btn-gold" onclick="submitForm()" style="font-size:16px;padding:16px;border-radius:14px">📨 提交数据</button>
+    <button class="btn btn-outline" onclick="back(7)">← 返回上一步检查</button>
+  </div>
+</section>
+
+<!-- ===== THANK YOU ===== -->
+<div id="ty">
+  <div class="icon">✓</div>
+  <h2>提交成功</h2>
+  <p>感谢您耐心填写！收纳数据已完整记录，设计师将在24小时内与您联系。</p>
+  <div class="flow-box">
+    <div class="tt">📅 接下来的流程</div>
+    <div>1. 设计师分析数据</div>
+    <div>2. 预约上门沟通测量</div>
+    <div>3. 出具初步设计方案</div>
+    <div>4. 方案调整与确认</div>
+    <div>5. 安装落地</div>
+  </div>
+  <button class="btn btn-gold" onclick="location.reload()" style="padding:12px 40px;border-radius:12px;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">📝 再填一份</button>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== Navigation =====
+const TOTAL = 8;
+let cur = 0;
+let mCount = 3;
+
+function initDots() {
+  const d = document.getElementById('stepDots');
+  d.innerHTML = '';
+  for(let i=1;i<=TOTAL;i++){const dot=document.createElement('div');dot.className='dot';d.appendChild(dot)}
+}
+
+function start(){
+  document.getElementById('sec-cover').style.display='none';
+  document.getElementById('topBar').classList.add('show');
+  show(1);
+}
+
+function show(n){
+  for(let i=1;i<=TOTAL;i++){const s=document.getElementById('sec-'+i);if(s)s.classList.remove('active')}
+  const sec=document.getElementById('sec-'+n);
+  if(sec){sec.classList.add('active');sec.querySelectorAll('.card,.ill-card').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(16px)';setTimeout(()=>{el.style.transition='all .4s ease';el.style.opacity='1';el.style.transform='translateY(0)'},i*60)})}
+  cur=n;
+  // top bar
+  document.getElementById('stepLabel').textContent=String(n).padStart(2,'0')+' / '+String(TOTAL).padStart(2,'0');
+  const dots=document.querySelectorAll('.dot');
+  dots.forEach((d,i)=>{d.classList.toggle('active',i<n)});
+  window.scrollTo({top:0,behavior:'smooth'});
+  // init
+  if(n===2)initMembers();
+  if(n===4)initDeclutter();
+  if(n===5)initFreq();
+}
+
+function go(n){
+  if(cur===1&&!document.getElementById('name').value.trim())return toast('请填写您的姓名');
+  show(n);
+}
+function back(n){show(n)}
+
+// ===== Toast =====
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500)}
+
+// ===== Step 2: Members =====
+function initMembers(){
+  const c=document.getElementById('members');c.innerHTML='';
+  const rels=['户主','配偶','子女','子女2','长辈'];
+  for(let i=0;i<mCount;i++){
+    const r=rels[i]||'成员'+(i+1);
+    const colors=['#8B6B4A','#C4956A','#8FA88A','#C0784A','#D4A574'];
+    const div=document.createElement('div');
+    div.style.cssText='background:#FDF8F3;border-radius:10px;padding:12px;margin-bottom:10px';
+    div.innerHTML=`
+      <div style="font-size:13px;font-weight:600;color:#8B6B4A;margin-bottom:8px"><span style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:${colors[i%5]};color:#fff;align-items:center;justify-content:center;font-size:11px;margin-right:6px">${r[0]}</span>${r}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <input type="number" placeholder="身高cm" class="mh" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'h',this.value)">
+        <input type="number" placeholder="体重kg" class="mw" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'w',this.value)">
+        <input type="number" placeholder="鞋码" class="ms" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'s',this.value)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <input type="number" placeholder="肩宽cm" class="msh" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'sh',this.value)">
+        <input type="number" placeholder="臂长cm" class="ma" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'a',this.value)">
+      </div>
+    `;
+    c.appendChild(div);
+  }
+  updateSummary();
+}
+
+const MEM=Array(5).fill(0).map(()=>({}));
+function updateMember(i,k,v){MEM[i]=MEM[i]||{};MEM[i][k]=v}
+
+// ===== Step 3: Pain Points =====
+function painCheck(){
+  const checks=document.querySelectorAll('#sec-3 .area-chk input:checked');
+  const container=document.getElementById('painDetail');
+  container.innerHTML='';
+  checks.forEach(cb=>{
+    const area=cb.value;
+    const div=document.createElement('div');
+    div.style.cssText='background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid #E8DDD0';
+    div.innerHTML=`
+      <div style="font-size:12px;font-weight:600;color:#8B6B4A;margin-bottom:6px">${area}</div>
+      <div class="sev-wrap" style="margin-bottom:8px">
+        ${['★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'].map((s,j)=>`
+          <label class="sev-btn" style="flex:1;padding:6px 0;border-radius:6px;border:1.5px solid #E8DDD0;cursor:pointer;text-align:center;font-size:11px;background:#FAF8F5;color:#B5A69A">
+            <input type="radio" name="sev_${area}" value="${j+1}" onchange="updatePain('${area}',${j+1})">${s}
+          </label>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:6px">
+        <input type="text" placeholder="具体痛点描述（如：鞋子太多放不下）" style="flex:1;padding:8px 10px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none" onchange="updatePainDesc('${area}',this.value)">
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  updateSummary();
+}
+const PAIN={};
+function updatePain(a,v){PAIN[a]=PAIN[a]||{};PAIN[a].sev=v}
+function updatePainDesc(a,v){PAIN[a]=PAIN[a]||{};PAIN[a].desc=v}
+
+// ===== Step 4: Declutter =====
+const KEEP_Q=['闲置1年以上的物品会如何处理？','不喜欢的礼物会如何处理？','过期护肤品/药品会立即丢弃吗？','破旧衣服会如何处理？','包装盒/说明书会保留吗？','「以后可能用到」的物品态度是？','购物小票/杂志如何处理？','孩子的旧玩具/作业如何处理？'];
+const BUY_Q=['买前会先思考存放位置吗？','容易冲动购物吗？','有囤货习惯吗？','买衣会考虑搭配现有衣物吗？','每周网购包裹数量？'];
+const DA={};
+
+function initDeclutter(){
+  const kc=document.getElementById('keepQs');kc.innerHTML='';
+  const bc=document.getElementById('buyQs');bc.innerHTML='';
+  KEEP_Q.forEach((q,i)=>{
+    const k='k'+i;if(DA[k]===undefined)DA[k]=3;
+    const div=document.createElement('div');div.className='rating-row';
+    div.innerHTML=`<div class="q">${i+1}. ${q}</div><div class="rating-opts">${[1,2,3,4,5].map(v=>`<label class="rating-o ${DA[k]===v?'active':''}" onclick="setDA('${k}',${v})" style="${DA[k]===v?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':''}">${v}</label>`).join('')}</div>`;
+    kc.appendChild(div);
+  });
+  BUY_Q.forEach((q,i)=>{
+    const k='b'+i;if(DA[k]===undefined)DA[k]=3;
+    const div=document.createElement('div');div.className='rating-row';
+    div.innerHTML=`<div class="q">${i+1}. ${q}</div><div class="rating-opts">${[1,2,3,4,5].map(v=>`<label class="rating-o ${DA[k]===v?'active':''}" onclick="setDA('${k}',${v})" style="${DA[k]===v?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':''}">${v}</label>`).join('')}</div>`;
+    bc.appendChild(div);
+  });
+  calcD();
+}
+
+function setDA(k,v){DA[k]=v;initDeclutter();}
+function calcD(){
+  const vals=Object.values(DA);if(!vals.length)return;
+  const total=vals.reduce((a,b)=>a+b,0);const max=KEEP_Q.length+BUY_Q.length;
+  document.getElementById('dScore').textContent=total;
+  const tags=['dTag1','dTag2','dTag3','dTag4'];
+  tags.forEach(t=>document.getElementById(t).classList.remove('on'));
+  let type='',strategy='';
+  if(total<=25){type='重度保留型';strategy='增加储物容量为优先，设计更多封闭式收纳，少做开放式展架。引导客户逐步断舍离。';document.getElementById('dTag1').classList.add('on')}
+  else if(total<=40){type='适度保留型';strategy='封闭+开放结合，预留20%弹性空间，建议分批筛选物品渐进式优化。';document.getElementById('dTag2').classList.add('on')}
+  else if(total<=55){type='倾向精简型';strategy='注重展示性收纳，精细化分区，高品质收纳配件，强调秩序美感。';document.getElementById('dTag3').classList.add('on')}
+  else{type='极简主义者';strategy='极致简洁设计，强调美学与空间感，低密度收纳方案，注重留白。';document.getElementById('dTag4').classList.add('on')}
+  document.getElementById('dType').textContent='诊断结果：'+type+'（'+total+'分）';
+  document.getElementById('dAdvice').innerHTML='<strong style="color:#8B6B4A;">推荐策略：</strong>'+strategy;
+  updateSummary();
+}
+
+// ===== Step 5: Frequency =====
+const FREQ_ITEMS=[
+  {area:'玄关',item:'当季常穿鞋'},{area:'玄关',item:'钥匙/门卡'},{area:'玄关',item:'包包'},
+  {area:'客厅',item:'遥控器'},{area:'客厅',item:'书籍/杂志'},{area:'客厅',item:'药品'},
+  {area:'厨房',item:'锅具'},{area:'厨房',item:'调料'},{area:'厨房',item:'小家电'},
+  {area:'主卧',item:'当季上装'},{area:'主卧',item:'当季下装'},{area:'主卧',item:'内衣/袜'},
+  {area:'主卧',item:'床品套件'},{area:'主卧',item:'换季衣物'},
+  {area:'卫生间',item:'护肤品'},{area:'卫生间',item:'洗漱用品'},{area:'卫生间',item:'囤货'},
+  {area:'儿童房',item:'日常衣物'},{area:'儿童房',item:'玩具'},{area:'儿童房',item:'绘本/学习'}
+];
+const FR={};
+const FREQ_OPTS=['每日','每周','每月','每季','低频'];
+
+function initFreq(){
+  const c=document.getElementById('freqList');c.innerHTML='';
+  FREQ_ITEMS.forEach((item,i)=>{
+    const k='f'+i;if(FR[k]===undefined)FR[k]='每日';
+    const div=document.createElement('div');div.className='freq-row';
+    div.innerHTML=`<span class="farea" style="color:#B5A69A">${item.area}</span><span class="fname">${item.item}</span><div class="freq-opts">${FREQ_OPTS.map(f=>`<label class="freq-o ${FR[k]===f?'active':''}" onclick="setFR('${k}','${f}')" style="${FR[k]===f?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':''}">${f}</label>`).join('')}</div>`;
+    c.appendChild(div);
+  });
+  updateSummary();
+}
+function setFR(k,v){FR[k]=v;initFreq();}
+
+// ===== Summary =====
+function updateSummary(){
+  document.getElementById('sumName').textContent=document.getElementById('name').value.trim()||'未填写';
+  document.getElementById('sumMembers').textContent=mCount;
+  document.getElementById('sumPain').textContent=document.querySelectorAll('#sec-3 .area-chk input:checked').length;
+  document.getElementById('sumScore').textContent=document.getElementById('dScore').textContent;
+  document.getElementById('sumFreq').textContent=Object.keys(FR).length;
+}
+
+// ===== Submit =====
+function submitForm(){
+  // Collect all data
+  const nm=document.getElementById('name').value.trim()||'未填写';
+  const rows=[];
+  const add=(mod,field,val)=>{rows.push({模块:mod,字段:field,回答:val!=null?String(val):'未填'})};
+
+  // 基本信息
+  add('基本信息','客户姓名',nm);
+  add('基本信息','手机号',document.getElementById('phone').value.trim());
+  add('基本信息','微信',document.getElementById('wechat').value);
+  add('基本信息','住宅类型',document.querySelector('[name=ht]:checked')?.value);
+  add('基本信息','面积(㎡)',document.getElementById('area').value);
+  add('基本信息','常住人口',document.getElementById('pop').value);
+  add('基本信息','房屋状态',document.querySelector('[name=hs]:checked')?.value);
+  add('基本信息','项目类型',document.querySelector('[name=pt]:checked')?.value);
+  add('基本信息','预算范围',document.querySelector('[name=bg]:checked')?.value);
+  add('基本信息','信息来源',document.querySelector('[name=src]:checked')?.value);
+
+  // 体态参数
+  for(let i=0;i<mCount;i++){
+    const rels=['户主','配偶','子女','子女2','长辈'];
+    const r=rels[i]||'成员'+(i+1);
+    if(MEM[i]&&MEM[i].h) add('体态参数',r+' 身高(cm)',MEM[i].h);
+    if(MEM[i]&&MEM[i].w) add('体态参数',r+' 体重(kg)',MEM[i].w);
+    if(MEM[i]&&MEM[i].s) add('体态参数',r+' 鞋码',MEM[i].s);
+    if(MEM[i]&&MEM[i].sh) add('体态参数',r+' 肩宽(cm)',MEM[i].sh);
+    if(MEM[i]&&MEM[i].a) add('体态参数',r+' 臂长(cm)',MEM[i].a);
+  }
+
+  // 痛点
+  const painAreas=document.querySelectorAll('#sec-3 .area-chk input:checked');
+  painAreas.forEach(cb=>{
+    const a=cb.value;
+    const sev=PAIN[a]?.sev||'';
+    const desc=PAIN[a]?.desc||'';
+    add('痛点诊断',a+' 严重程度',sev+'★');
+    if(desc) add('痛点诊断',a+' 具体描述',desc);
+  });
+
+  // 断舍离
+  const KEEP_Q=['闲置1年以上的物品会如何处理？','不喜欢的礼物会如何处理？','过期护肤品/药品会立即丢弃吗？','破旧衣服会如何处理？','包装盒/说明书会保留吗？','「以后可能用到」的物品态度是？','购物小票/杂志如何处理？','孩子的旧玩具/作业如何处理？'];
+  const BUY_Q=['买前会先思考存放位置吗？','容易冲动购物吗？','有囤货习惯吗？','买衣会考虑搭配现有衣物吗？','每周网购包裹数量？'];
+  for(let i=0;i<KEEP_Q.length;i++){const v=DA['k'+i];if(v!==undefined)add('断舍离-保留倾向',KEEP_Q[i],v+'分')}
+  for(let i=0;i<BUY_Q.length;i++){const v=DA['b'+i];if(v!==undefined)add('断舍离-购买习惯',BUY_Q[i],v+'分')}
+  const vals=Object.values(DA);
+  if(vals.length){const total=vals.reduce((a,b)=>a+b,0);add('断舍离','总分',total+'分');
+    let type='';if(total<=25)type='重度保留型';else if(total<=40)type='适度保留型';else if(total<=55)type='倾向精简型';else type='极简主义者';
+    add('断舍离','诊断类型',type)}
+
+  // 使用频率
+  const FREQ_ITEMS=['当季常穿鞋','钥匙/门卡','包包','遥控器','书籍/杂志','药品','锅具','调料','小家电','当季上装','当季下装','内衣/袜','床品套件','换季衣物','护肤品','洗漱用品','囤货','日常衣物','玩具','绘本/学习'];
+  const FREQ_AREAS=['玄关','玄关','玄关','客厅','客厅','客厅','厨房','厨房','厨房','主卧','主卧','主卧','主卧','主卧','卫生间','卫生间','卫生间','儿童房','儿童房','儿童房'];
+  for(let i=0;i<FREQ_ITEMS.length;i++){const v=FR['f'+i];if(v)add('使用频率',FREQ_AREAS[i]+'-'+FREQ_ITEMS[i],v)}
+
+  // 动线
+  add('动线分析','清晨动线类型',document.querySelector('[name=morning]:checked')?.value);
+  const lost=[...document.querySelectorAll('[name=lost]:checked')].map(e=>e.value);
+  if(lost.length) add('动线分析','出门常找不到',lost.join('、'));
+  add('动线分析','晚间动线类型',document.querySelector('[name=evening]:checked')?.value);
+  add('动线分析','外套/包包放置',document.querySelector('[name=coat]:checked')?.value);
+
+  // 生活习惯
+  add('生活习惯','起床时间',document.getElementById('wake').value);
+  add('生活习惯','就寝时间',document.getElementById('sleep').value);
+  add('生活习惯','在家用早餐',document.querySelector('[name=bf]:checked')?.value);
+  add('生活习惯','在家做晚餐',document.querySelector('[name=df]:checked')?.value);
+  add('生活习惯','居家办公',document.querySelector('[name=wfh]:checked')?.value);
+  add('生活习惯','采购频率',document.getElementById('shopFreq').value);
+  add('生活习惯','买菜渠道',document.getElementById('shopCh').value);
+  add('生活习惯','购物风格',document.querySelector('[name=hoard]:checked')?.value);
+  add('生活习惯','收纳风格',document.querySelector('[name=org]:checked')?.value);
+  add('生活习惯','折叠衣物态度',document.querySelector('[name=fold]:checked')?.value);
+  add('生活习惯','可视化收纳偏好',document.querySelector('[name=vis]:checked')?.value);
+  add('生活习惯','运动频率',document.getElementById('fit').value);
+  add('生活习惯','宠物',document.querySelector('[name=pet]:checked')?.value);
+  const hobbies=[...document.querySelectorAll('#sec-7 [type=checkbox]:checked')].map(e=>e.value);
+  if(hobbies.length) add('生活习惯','爱好/收藏',hobbies.join('、'));
+  add('生活习惯','特殊需求',document.getElementById('special').value);
+
+  // Save to localStorage (rows for Excel backup)
+  localStorage.setItem('storage_survey_'+Date.now(),JSON.stringify(rows));
+
+  // Save structured data for analysis report
+  const reportData = {
+    basic: {
+      name: nm,
+      phone: document.getElementById('phone').value.trim(),
+      wechat: document.getElementById('wechat').value,
+      homeType: document.querySelector('[name=ht]:checked')?.value,
+      area: document.getElementById('area').value,
+      pop: document.getElementById('pop').value,
+      houseStatus: document.querySelector('[name=hs]:checked')?.value,
+      projectType: document.querySelector('[name=pt]:checked')?.value,
+      budget: document.querySelector('[name=bg]:checked')?.value,
+      source: document.querySelector('[name=src]:checked')?.value
+    },
+    members: MEM.slice(0, mCount),
+    painPoints: PAIN,
+    declutter: DA,
+    freq: FR,
+    morning: {
+      flow: document.querySelector('[name=morning]:checked')?.value,
+      lost: [...document.querySelectorAll('[name=lost]:checked')].map(e=>e.value)
+    },
+    evening: {
+      flow: document.querySelector('[name=evening]:checked')?.value,
+      coat: document.querySelector('[name=coat]:checked')?.value
+    },
+    lifestyle: {
+      wake: document.getElementById('wake').value,
+      sleep: document.getElementById('sleep').value,
+      breakfast: document.querySelector('[name=bf]:checked')?.value,
+      dinner: document.querySelector('[name=df]:checked')?.value,
+      wfh: document.querySelector('[name=wfh]:checked')?.value,
+      shopFreq: document.getElementById('shopFreq').value,
+      shopCh: document.getElementById('shopCh').value,
+      hoard: document.querySelector('[name=hoard]:checked')?.value,
+      org: document.querySelector('[name=org]:checked')?.value,
+      fold: document.querySelector('[name=fold]:checked')?.value,
+      vis: document.querySelector('[name=vis]:checked')?.value,
+      fit: document.getElementById('fit').value,
+      pet: document.querySelector('[name=pet]:checked')?.value,
+      hobbies: [...document.querySelectorAll('#sec-7 [type=checkbox]:checked')].map(e=>e.value),
+      special: document.getElementById('special').value
+    }
+  };
+  localStorage.setItem('storage_survey_latest', JSON.stringify(reportData));
+
+  // Generate Excel
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:14},{wch:26},{wch:30}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'收纳数据');
+  const wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+  const blob=new Blob([wbout],{type:'application/octet-stream'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='收纳数据_'+nm+'.xlsx';a.click();
+
+  // Show thank you
+  document.querySelectorAll('section[id^="sec-"]').forEach(s=>{s.style.display='none'});
+  document.getElementById('topBar').classList.remove('show');
+  document.getElementById('ty').classList.add('show');
+}
+
+// ===== Init =====
+initDots();
+</script>
+</body>
+</html>
