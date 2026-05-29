@@ -320,7 +320,8 @@ function updateSummary(){
 }
 
 // ===== Submit =====
-function submitForm(){
+async function submitForm(){
+  const sb=document.getElementById('submitBtn');sb.disabled=true;sb.textContent='⏳ 提交中...';
   const nm=document.getElementById('name').value.trim()||'未填写';
   const rows=[];
   const add=(mod,field,val)=>{rows.push({模块:mod,字段:field,回答:val!=null?String(val):'未填'})};
@@ -411,8 +412,12 @@ function submitForm(){
 
   localStorage.setItem('storage_survey_latest', JSON.stringify(reportData));
 
-  // Save to Gitee (国内数据存储)
-  saveToGitee(nm, reportData);
+  // Save to Gitee (国内数据存储) - wait for it to finish
+  try {
+    await saveToGitee(nm, reportData);
+  } catch(e) {
+    // Save failed silently - data still in localStorage
+  }
 
   // Show thank you
   document.querySelectorAll('section.active').forEach(s=>s.classList.remove('active'));
@@ -1585,7 +1590,7 @@ async function saveToGitee(name, data) {
   </div>
 
   <div class="btn-group" style="flex-direction:column;gap:10px">
-    <button class="btn btn-gold" onclick="submitForm()" style="font-size:16px;padding:16px;border-radius:14px">📨 提交数据</button>
+    <button class="btn btn-gold" id="submitBtn" onclick="submitForm()" style="font-size:16px;padding:16px;border-radius:14px">📨 提交数据</button>
     <button class="btn btn-outline" onclick="back(7)">← 返回上一步检查</button>
   </div>
 </section>
