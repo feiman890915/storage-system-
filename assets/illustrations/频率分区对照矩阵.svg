@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0f3460"/></linearGradient>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2ecc71"/><stop offset="100%" stop-color="#27ae60"/></linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f1c40f"/><stop offset="100%" stop-color="#f39c12"/></linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#e67e22"/><stop offset="100%" stop-color="#d35400"/></linearGradient>
+    <linearGradient id="g4" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#e74c3c"/><stop offset="100%" stop-color="#c0392b"/></linearGradient>
+  </defs>
+  <rect width="600" height="450" fill="url(#bg)" rx="20"/>
+  <text x="300" y="40" text-anchor="middle" fill="#e2b714" font-size="20" font-weight="bold" font-family="Microsoft YaHei,sans-serif">使用频率 → 存放位置对照矩阵</text>
+  <text x="300" y="62" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12" font-family="Microsoft YaHei,sans-serif">Usage Frequency → Storage Position Mapping Matrix</text>
+
+  <!-- Table -->
+  <g transform="translate(30, 80)">
+    <!-- Header -->
+    <rect x="0" y="0" width="110" height="40" rx="4" fill="rgba(255,255,255,.1)"/>
+    <text x="55" y="25" text-anchor="middle" fill="#e2b714" font-size="13" font-weight="bold" font-family="Microsoft YaHei,sans-serif">使用频率</text>
+
+    <rect x="115" y="0" width="130" height="40" rx="4" fill="rgba(255,255,255,.1)"/>
+    <text x="180" y="25" text-anchor="middle" fill="#e2b714" font-size="13" font-weight="bold" font-family="Microsoft YaHei,sans-serif">存放区域</text>
+
+    <rect x="250" y="0" width="160" height="40" rx="4" fill="rgba(255,255,255,.1)"/>
+    <text x="330" y="25" text-anchor="middle" fill="#e2b714" font-size="13" font-weight="bold" font-family="Microsoft YaHei,sans-serif">策略</text>
+
+    <rect x="415" y="0" width="120" height="40" rx="4" fill="rgba(255,255,255,.1)"/>
+    <text x="475" y="25" text-anchor="middle" fill="#e2b714" font-size="13" font-weight="bold" font-family="Microsoft YaHei,sans-serif">物品示例</text>
+
+    <!-- Rows -->
+    <!-- Daily -->
+    <rect x="0" y="45" width="110" height="55" rx="3" fill="rgba(46,204,113,.15)"/>
+    <text x="55" y="62" text-anchor="middle" fill="#2ecc71" font-size="18" font-weight="bold" font-family="Microsoft YaHei,sans-serif">每日</text>
+    <text x="55" y="82" text-anchor="middle" fill="rgba(46,204,113,.6)" font-size="9" font-family="Microsoft YaHei,sans-serif">Daily</text>
+
+    <rect x="115" y="45" width="130" height="55" rx="3" fill="rgba(46,204,113,.08)"/>
+    <text x="180" y="68" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">黄金区</text>
+    <text x="180" y="85" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">65-160cm</text>
+
+    <rect x="250" y="45" width="160" height="55" rx="3" fill="rgba(46,204,113,.08)"/>
+    <text x="330" y="68" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">站立可及，不弯腰不踮脚</text>
+    <text x="330" y="85" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">开放式挂衣 / 抽屉</text>
+
+    <rect x="415" y="45" width="120" height="55" rx="3" fill="rgba(46,204,113,.08)"/>
+    <text x="475" y="68" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">当季衣物</text>
+    <text x="475" y="85" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">日常护肤/洗漱</text>
+
+    <!-- Weekly -->
+    <rect x="0" y="105" width="110" height="55" rx="3" fill="rgba(241,196,15,.15)"/>
+    <text x="55" y="122" text-anchor="middle" fill="#f1c40f" font-size="18" font-weight="bold" font-family="Microsoft YaHei,sans-serif">每周</text>
+    <text x="55" y="142" text-anchor="middle" fill="rgba(241,196,15,.6)" font-size="9" font-family="Microsoft YaHei,sans-serif">Weekly</text>
+
+    <rect x="115" y="105" width="130" height="55" rx="3" fill="rgba(241,196,15,.08)"/>
+    <text x="180" y="128" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">次黄金区</text>
+    <text x="180" y="145" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">上层 / 中层抽屉</text>
+
+    <rect x="250" y="105" width="160" height="55" rx="3" fill="rgba(241,196,15,.08)"/>
+    <text x="330" y="128" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">轻微伸展 / 轻度弯腰</text>
+    <text x="330" y="145" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">层板 / 半开放式</text>
+
+    <rect x="415" y="105" width="120" height="55" rx="3" fill="rgba(241,196,15,.08)"/>
+    <text x="475" y="128" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">床品四件套</text>
+    <text x="475" y="145" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">低频配饰</text>
+
+    <!-- Monthly -->
+    <rect x="0" y="165" width="110" height="55" rx="3" fill="rgba(230,126,34,.15)"/>
+    <text x="55" y="182" text-anchor="middle" fill="#e67e22" font-size="18" font-weight="bold" font-family="Microsoft YaHei,sans-serif">每月</text>
+    <text x="55" y="202" text-anchor="middle" fill="rgba(230,126,34,.6)" font-size="9" font-family="Microsoft YaHei,sans-serif">Monthly</text>
+
+    <rect x="115" y="165" width="130" height="55" rx="3" fill="rgba(230,126,34,.08)"/>
+    <text x="180" y="188" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">中层区</text>
+    <text x="180" y="205" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">需小凳 / 完全蹲下</text>
+
+    <rect x="250" y="165" width="160" height="55" rx="3" fill="rgba(230,126,34,.08)"/>
+    <text x="330" y="188" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">辅助工具可达</text>
+    <text x="330" y="205" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">百纳箱 / 标签系统</text>
+
+    <rect x="415" y="165" width="120" height="55" rx="3" fill="rgba(230,126,34,.08)"/>
+    <text x="475" y="188" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">换季部分衣物</text>
+    <text x="475" y="205" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">囤货日用品</text>
+
+    <!-- Seasonal/Low -->
+    <rect x="0" y="225" width="110" height="55" rx="3" fill="rgba(231,76,60,.15)"/>
+    <text x="55" y="242" text-anchor="middle" fill="#e74c3c" font-size="16" font-weight="bold" font-family="Microsoft YaHei,sans-serif">每季/低频</text>
+    <text x="55" y="262" text-anchor="middle" fill="rgba(231,76,60,.6)" font-size="9" font-family="Microsoft YaHei,sans-serif">Seasonal</text>
+
+    <rect x="115" y="225" width="130" height="55" rx="3" fill="rgba(231,76,60,.08)"/>
+    <text x="180" y="248" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">顶层/底层</text>
+    <text x="180" y="265" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">>185cm / &lt;40cm</text>
+
+    <rect x="250" y="225" width="160" height="55" rx="3" fill="rgba(231,76,60,.08)"/>
+    <text x="330" y="248" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">需借助工具（梯凳）</text>
+    <text x="330" y="265" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">压缩袋 / 百纳箱 / 标签</text>
+
+    <rect x="415" y="225" width="120" height="55" rx="3" fill="rgba(231,76,60,.08)"/>
+    <text x="475" y="248" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">换季被褥</text>
+    <text x="475" y="265" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="11" font-family="Microsoft YaHei,sans-serif">行李箱/大件</text>
+
+    <!-- Never -->
+    <rect x="0" y="285" width="110" height="40" rx="3" fill="rgba(255,255,255,.05)"/>
+    <text x="55" y="310" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="14" font-weight="bold" font-family="Microsoft YaHei,sans-serif">从不使用</text>
+    <rect x="115" y="285" width="130" height="40" rx="3" fill="rgba(255,255,255,.03)"/>
+    <text x="180" y="310" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="Microsoft YaHei,sans-serif">建议断舍离</text>
+    <rect x="250" y="285" width="160" height="40" rx="3" fill="rgba(255,255,255,.03)"/>
+    <text x="330" y="310" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="Microsoft YaHei,sans-serif">不纳入收纳系统设计</text>
+    <rect x="415" y="285" width="120" height="40" rx="3" fill="rgba(255,255,255,.03)"/>
+    <text x="475" y="310" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="Microsoft YaHei,sans-serif">→ 捐赠 / 丢弃</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="300" y="435" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="10" font-family="Microsoft YaHei,sans-serif">核心原则：使用频率越高 → 存放位置越接近黄金区 | 降低日常取放动线成本</text>
+</svg>

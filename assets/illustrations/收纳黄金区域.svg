@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0f3460"/></linearGradient>
+    <linearGradient id="goldBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2ecc71" stop-opacity=".3"/><stop offset="100%" stop-color="#27ae60" stop-opacity=".3"/></linearGradient>
+    <linearGradient id="silverBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f39c12" stop-opacity=".2"/><stop offset="100%" stop-color="#e67e22" stop-opacity=".2"/></linearGradient>
+    <linearGradient id="bronzeBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e74c3c" stop-opacity=".15"/><stop offset="100%" stop-color="#c0392b" stop-opacity=".15"/></linearGradient>
+  </defs>
+
+  <rect width="600" height="500" fill="url(#bg)" rx="20"/>
+
+  <text x="300" y="40" text-anchor="middle" fill="#e2b714" font-size="20" font-weight="bold" font-family="Microsoft YaHei,sans-serif">收纳黄金区域分区</text>
+  <text x="300" y="62" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12" font-family="Microsoft YaHei,sans-serif">Storage Zone Division — 以女性165cm / 男性175cm为参考</text>
+
+  <!-- Cabinet frame -->
+  <rect x="100" y="80" width="400" height="380" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2" rx="4"/>
+  <!-- Top -->
+  <rect x="100" y="80" width="400" height="16" fill="rgba(255,255,255,.1)" rx="2"/>
+  <!-- Bottom -->
+  <rect x="100" y="444" width="400" height="16" fill="rgba(255,255,255,.1)" rx="2"/>
+  <!-- Divider -->
+  <line x1="100" y1="260" x2="500" y2="260" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- ===== Left: Female Reference ===== -->
+  <g transform="translate(180, 0)">
+    <!-- Figure -->
+    <ellipse cx="60" cy="430" rx="8" ry="12" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>
+    <line x1="60" y1="442" x2="60" y2="340" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>
+    <line x1="45" y1="380" x2="75" y2="380" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>
+    <line x1="45" y1="380" x2="40" y2="320" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+    <line x1="75" y1="380" x2="80" y2="320" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+    <!-- Reach arc -->
+    <path d="M15 320 Q60 290 105 320" fill="none" stroke="rgba(226,183,20,.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+    <text x="60" y="310" text-anchor="middle" fill="rgba(226,183,20,.5)" font-size="9" font-family="Microsoft YaHei,sans-serif">手臂可及</text>
+  </g>
+
+  <!-- ===== Right: Male Reference ===== -->
+  <g transform="translate(350, 0)">
+    <ellipse cx="60" cy="428" rx="9" ry="13" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>
+    <line x1="60" y1="441" x2="60" y2="330" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>
+    <line x1="42" y1="375" x2="78" y2="375" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>
+    <line x1="42" y1="375" x2="36" y2="305" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+    <line x1="78" y1="375" x2="84" y2="305" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+    <path d="M10 305 Q60 270 110 305" fill="none" stroke="rgba(226,183,20,.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+    <text x="60" y="293" text-anchor="middle" fill="rgba(226,183,20,.5)" font-size="9" font-family="Microsoft YaHei,sans-serif">手臂可及</text>
+  </g>
+
+  <!-- ===== Zone Indicators ===== -->
+  <!-- Bronze Top: 185-210cm -->
+  <rect x="100" y="80" width="400" height="55" fill="url(#bronzeBar)" stroke="#e74c3c" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="300" y="101" text-anchor="middle" fill="#e74c3c" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">● 低频区（185-210cm）</text>
+  <text x="300" y="117" text-anchor="middle" fill="rgba(231,76,60,.6)" font-size="10" font-family="Microsoft YaHei,sans-serif">换季被褥 / 行李箱 / 不常用杂物</text>
+
+  <!-- Silver Top: 160-185cm -->
+  <rect x="100" y="135" width="400" height="60" fill="url(#silverBar)" stroke="#f39c12" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="300" y="156" text-anchor="middle" fill="#f39c12" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">◆ 次黄金区（160-185cm）</text>
+  <text x="300" y="172" text-anchor="middle" fill="rgba(243,156,18,.6)" font-size="10" font-family="Microsoft YaHei,sans-serif">不常用餐具 / 备品 / 低频文件</text>
+  <text x="300" y="186" text-anchor="middle" fill="rgba(243,156,18,.5)" font-size="9" font-family="Microsoft YaHei,sans-serif">需踮脚或使用小凳</text>
+
+  <!-- Gold: 65-160cm -->
+  <rect x="100" y="195" width="400" height="155" fill="url(#goldBar)" stroke="#2ecc71" stroke-width="2"/>
+  <text x="300" y="220" text-anchor="middle" fill="#2ecc71" font-size="14" font-weight="bold" font-family="Microsoft YaHei,sans-serif">★ ★ ★ 黄金收纳区（65-160cm）★ ★ ★</text>
+  <text x="300" y="240" text-anchor="middle" fill="rgba(46,204,113,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">站立手臂可及范围 | 最便捷 | 高频使用</text>
+
+  <!-- Gold sub-zones -->
+  <text x="300" y="268" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">黄金区内部细分</text>
+
+  <text x="140" y="295" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">👁 眼部水平区</text>
+  <text x="140" y="315" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">140-160cm</text>
+  <text x="140" y="333" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="9" font-family="Microsoft YaHei,sans-serif">展示性收纳</text>
+
+  <text x="300" y="295" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">🤲 伸手可及区</text>
+  <text x="300" y="315" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">90-140cm</text>
+  <text x="300" y="333" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="9" font-family="Microsoft YaHei,sans-serif">最常用衣物/餐具/日用品</text>
+
+  <text x="460" y="295" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11" font-family="Microsoft YaHei,sans-serif">📦 弯腰可及区</text>
+  <text x="460" y="315" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">65-90cm</text>
+  <text x="460" y="333" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="9" font-family="Microsoft YaHei,sans-serif">高频但非每日</text>
+
+  <!-- Silver Bottom: 40-65cm -->
+  <rect x="100" y="350" width="400" height="50" fill="url(#silverBar)" stroke="#f39c12" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="300" y="370" text-anchor="middle" fill="#f39c12" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">◆ 次黄金区（40-65cm）</text>
+  <text x="300" y="388" text-anchor="middle" fill="rgba(243,156,18,.6)" font-size="10" font-family="Microsoft YaHei,sans-serif">需蹲下取放，低频但可及</text>
+
+  <!-- Bronze Bottom: 0-40cm -->
+  <rect x="100" y="400" width="400" height="60" fill="url(#bronzeBar)" stroke="#e74c3c" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="300" y="420" text-anchor="middle" fill="#e74c3c" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">● 低频区（<40cm）</text>
+  <text x="300" y="440" text-anchor="middle" fill="rgba(231,76,60,.6)" font-size="10" font-family="Microsoft YaHei,sans-serif">大件重物 / 囤货 / 行李箱 / 换季鞋</text>
+
+  <!-- Footer -->
+  <text x="300" y="488" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="10" font-family="Microsoft YaHei,sans-serif">设计原则：高频物品入黄金区 | 低频物品向上/向下收纳</text>
+</svg>

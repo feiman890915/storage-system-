@@ -433,12 +433,30 @@ const GITEE_TOKEN = 'da49344488b843dc9927afa3bf169503';
 const GITEE_REPO = 'fei890915/storage-system';
 
 async function saveToGitee(name, data) {
-  try {
-    const fn = 'sub_' + Date.now() + '_' + name.replace(/[^\w一-龥]/g,'_').slice(0,30) + '.json';
-    const body = JSON.stringify({ access_token: GITEE_TOKEN, content: btoa(unescape(encodeURIComponent(JSON.stringify(data)))), message: '客户提交: ' + name });
-    const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + encodeURIComponent(fn) + '?access_token=' + GITEE_TOKEN, { method: 'POST', headers: {'Content-Type':'application/json'}, body: body });
-    if (!res.ok) console.warn('Gitee save error:', res.status + ' ' + (await res.text().catch(()=>'')));
-  } catch(e) { console.warn('Gitee save error:', e) }
+  // Use hidden form POST iframe (no CORS, works in all browsers)
+  const fn = 'sub_' + Date.now() + '_' + name.replace(/[^\w一-龥]/g,'_').slice(0,30) + '.json';
+  const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  const url = 'https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + encodeURIComponent(fn) + '?access_token=' + GITEE_TOKEN;
+  return new Promise(ok => {
+    const ifr = document.createElement('iframe');
+    ifr.style.display = 'none';
+    ifr.onload = () => { document.body.removeChild(ifr); ok() };
+    document.body.appendChild(ifr);
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    form.enctype = 'application/x-www-form-urlencoded';
+    form.target = ifr.name = ifr.id = 'gform_' + Date.now();
+    ['access_token','content','message'].forEach(k => {
+      const i = document.createElement('input'); i.type = 'hidden';
+      i.name = k; i.value = k === 'content' ? b64 : k === 'message' ? '客户提交: ' + name : GITEE_TOKEN;
+      form.appendChild(i);
+    });
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    setTimeout(() => ok(), 5000); // fallback if onload fails
+  });
 }
 </script>
 </head>

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" width="600" height="480">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0f3460"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#e2b714"/></marker>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="rgba(255,255,255,.3)"/></marker>
+  </defs>
+  <rect width="600" height="480" fill="url(#bg)" rx="20"/>
+  <text x="300" y="40" text-anchor="middle" fill="#e2b714" font-size="20" font-weight="bold" font-family="Microsoft YaHei,sans-serif">家居动线分析图</text>
+  <text x="300" y="62" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12" font-family="Microsoft YaHei,sans-serif">Movement Line Analysis — 清晨 & 晚间动线</text>
+
+  <!-- ===== Morning Flow (Top) ===== -->
+  <g transform="translate(40, 80)">
+    <text x="0" y="0" fill="#f5d742" font-size="14" font-weight="bold" font-family="Microsoft YaHei,sans-serif"><tspan fill="#e2b714">☀</tspan> 清晨动线（起床→出门）</text>
+
+    <!-- Flow nodes -->
+    <g>
+      <!-- Nodes -->
+      <rect x="0" y="20" width="70" height="40" rx="20" fill="rgba(226,183,20,.15)" stroke="#e2b714" stroke-width="1.5"/>
+      <text x="35" y="45" text-anchor="middle" fill="#e2b714" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">起床</text>
+
+      <line x1="70" y1="40" x2="95" y2="40" stroke="#e2b714" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="98" y="20" width="70" height="40" rx="20" fill="rgba(226,183,20,.15)" stroke="#e2b714" stroke-width="1.5"/>
+      <text x="133" y="45" text-anchor="middle" fill="#e2b714" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">洗漱</text>
+
+      <line x1="168" y1="40" x2="193" y2="40" stroke="#e2b714" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="196" y="20" width="70" height="40" rx="20" fill="rgba(226,183,20,.15)" stroke="#e2b714" stroke-width="1.5"/>
+      <text x="231" y="45" text-anchor="middle" fill="#e2b714" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">更衣</text>
+
+      <line x1="266" y1="40" x2="291" y2="40" stroke="#e2b714" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="294" y="20" width="70" height="40" rx="20" fill="rgba(226,183,20,.15)" stroke="#e2b714" stroke-width="1.5"/>
+      <text x="329" y="45" text-anchor="middle" fill="#e2b714" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">早餐</text>
+
+      <line x1="364" y1="40" x2="389" y2="40" stroke="#e2b714" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="392" y="20" width="70" height="40" rx="20" fill="rgba(226,183,20,.15)" stroke="#e2b714" stroke-width="1.5"/>
+      <text x="427" y="45" text-anchor="middle" fill="#e2b714" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">出门</text>
+    </g>
+
+    <!-- Pain points on flow -->
+    <g font-size="10" font-family="Microsoft YaHei,sans-serif">
+      <text x="470" y="35" fill="#e74c3c" font-size="10"><tspan fill="#e74c3c" font-weight="bold">⚠</tspan> 找衣服翻乱衣柜</text>
+      <text x="470" y="50" fill="#e74c3c" font-size="10"><tspan fill="#e74c3c" font-weight="bold">⚠</tspan> 钥匙/包包找不到</text>
+    </g>
+
+    <!-- Storage points -->
+    <g transform="translate(0, 75)">
+      <rect x="0" y="0" width="520" height="60" rx="8" fill="rgba(255,255,255,.05)"/>
+      <text x="15" y="18" fill="rgba(255,255,255,.5)" font-size="10" font-family="Microsoft YaHei,sans-serif">收纳触点分析：</text>
+      <text x="15" y="36" fill="rgba(255,255,255,.7)" font-size="10" font-family="Microsoft YaHei,sans-serif">• 更衣环节 → 衣柜黄金区需满足"睁眼即拿"</text>
+      <text x="15" y="52" fill="rgba(255,255,255,.7)" font-size="10" font-family="Microsoft YaHei,sans-serif">• 出门环节 → 玄关需设置"一站式出门"收纳（钥匙/包/口罩/伞）</text>
+    </g>
+  </g>
+
+  <!-- ===== Evening Flow (Bottom) ===== -->
+  <g transform="translate(40, 250)">
+    <text x="0" y="0" fill="#f5d742" font-size="14" font-weight="bold" font-family="Microsoft YaHei,sans-serif"><tspan fill="#e2b714">🌙</tspan> 晚间动线（回家→就寝）</text>
+
+    <!-- Flow -->
+    <rect x="0" y="20" width="70" height="40" rx="20" fill="rgba(46,204,113,.15)" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="35" y="45" text-anchor="middle" fill="#2ecc71" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">回家</text>
+    <line x1="70" y1="40" x2="95" y2="40" stroke="#2ecc71" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="98" y="20" width="70" height="40" rx="20" fill="rgba(46,204,113,.15)" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="133" y="45" text-anchor="middle" fill="#2ecc71" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">玄关</text>
+    <line x1="168" y1="40" x2="193" y2="40" stroke="#2ecc71" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="196" y="20" width="70" height="40" rx="20" fill="rgba(46,204,113,.15)" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="231" y="45" text-anchor="middle" fill="#2ecc71" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">换衣</text>
+    <line x1="266" y1="40" x2="291" y2="40" stroke="#2ecc71" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="294" y="20" width="70" height="40" rx="20" fill="rgba(46,204,113,.15)" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="329" y="45" text-anchor="middle" fill="#2ecc71" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">晚餐</text>
+    <line x1="364" y1="40" x2="389" y2="40" stroke="#2ecc71" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="392" y="20" width="70" height="40" rx="20" fill="rgba(46,204,113,.15)" stroke="#2ecc71" stroke-width="1.5"/>
+    <text x="427" y="45" text-anchor="middle" fill="#2ecc71" font-size="11" font-weight="bold" font-family="Microsoft YaHei,sans-serif">就寝</text>
+
+    <!-- Pain points -->
+    <g font-size="10" font-family="Microsoft YaHei,sans-serif">
+      <text x="470" y="35" fill="#e74c3c"><tspan fill="#e74c3c" font-weight="bold">⚠</tspan> 外套次净衣无处挂</text>
+      <text x="470" y="50" fill="#e74c3c"><tspan fill="#e74c3c" font-weight="bold">⚠</tspan> 换洗衣物无暂放区</text>
+    </g>
+
+    <!-- Storage points -->
+    <g transform="translate(0, 75)">
+      <rect x="0" y="0" width="520" height="60" rx="8" fill="rgba(255,255,255,.05)"/>
+      <text x="15" y="18" fill="rgba(255,255,255,.5)" font-size="10" font-family="Microsoft YaHei,sans-serif">收纳触点分析：</text>
+      <text x="15" y="36" fill="rgba(255,255,255,.7)" font-size="10" font-family="Microsoft YaHei,sans-serif">• 玄关→换衣 → 次净衣区设计（挂+通风）</text>
+      <text x="15" y="52" fill="rgba(255,255,255,.7)" font-size="10" font-family="Microsoft YaHei,sans-serif">• 换衣→就寝 → 睡衣就近挂放 / 床头收纳系统</text>
+    </g>
+  </g>
+
+  <!-- ===== Design Principles at Bottom ===== -->
+  <g transform="translate(40, 400)">
+    <line x1="0" y1="0" x2="520" y2="0" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+    <text x="0" y="20" fill="rgba(255,255,255,.5)" font-size="10" font-family="Microsoft YaHei,sans-serif">动线设计原则：</text>
+    <text x="0" y="38" fill="rgba(255,255,255,.6)" font-size="10" font-family="Microsoft YaHei,sans-serif">最短路径  动作连贯  双手释放  视觉可达  按人分区</text>
+  </g>
+</svg>

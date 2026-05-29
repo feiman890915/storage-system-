@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0f3460"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e2b714"/><stop offset="100%" stop-color="#f5d742"/></linearGradient>
+    <linearGradient id="zone1g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2ecc71" stop-opacity=".25"/><stop offset="100%" stop-color="#27ae60" stop-opacity=".25"/></linearGradient>
+    <linearGradient id="zone2g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f39c12" stop-opacity=".2"/><stop offset="100%" stop-color="#e67e22" stop-opacity=".2"/></linearGradient>
+    <linearGradient id="zone3g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e74c3c" stop-opacity=".15"/><stop offset="100%" stop-color="#c0392b" stop-opacity=".15"/></linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="900" fill="url(#bg)" rx="20"/>
+
+  <!-- Title -->
+  <text x="300" y="45" text-anchor="middle" fill="#e2b714" font-size="22" font-weight="bold" font-family="Microsoft YaHei,sans-serif">人体尺寸参考图（女/男）</text>
+  <text x="300" y="68" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="13" font-family="Microsoft YaHei,sans-serif">Human Body Measurement Reference for Storage Design</text>
+
+  <!-- Ruler left -->
+  <line x1="80" y1="120" x2="80" y2="820" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="460" y1="120" x2="460" y2="820" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Scale marks left -->
+  <g fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">
+    <line x1="75" y1="130" x2="85" y2="130" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="68" y="134" text-anchor="end">180</text>
+    <line x1="75" y1="230" x2="85" y2="230" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="68" y="234" text-anchor="end">170</text>
+    <line x1="75" y1="330" x2="85" y2="330" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="68" y="334" text-anchor="end">160</text>
+    <line x1="75" y1="430" x2="85" y2="430" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="68" y="434" text-anchor="end">150</text>
+    <line x1="75" y1="530" x2="85" y2="530" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="68" y="534" text-anchor="end">140</text>
+    <line x1="75" y1="630" x2="85" y2="630" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="68" y="634" text-anchor="end">130</text>
+    <line x1="75" y1="730" x2="85" y2="730" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="68" y="734" text-anchor="end">120</text>
+  </g>
+
+  <!-- Scale marks right -->
+  <g fill="rgba(255,255,255,.4)" font-size="10" font-family="Microsoft YaHei,sans-serif">
+    <line x1="455" y1="130" x2="465" y2="130" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="475" y="134">190</text>
+    <line x1="455" y1="200" x2="465" y2="200" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="475" y="204">180</text>
+    <line x1="455" y1="270" x2="465" y2="270" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="475" y="274">170</text>
+    <line x1="455" y1="340" x2="465" y2="340" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="475" y="344">160</text>
+    <line x1="455" y1="410" x2="465" y2="410" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="475" y="414">150</text>
+    <line x1="455" y1="480" x2="465" y2="480" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    <text x="475" y="484">140</text>
+  </g>
+
+  <!-- ===== Female Body (Left) ===== -->
+  <g transform="translate(140, 0)">
+    <!-- Head -->
+    <ellipse cx="60" cy="155" rx="20" ry="24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+    <!-- Hair hint -->
+    <path d="M42 148 Q60 125 78 148" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+    <!-- Body -->
+    <line x1="60" y1="179" x2="60" y2="380" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+    <!-- Shoulders -->
+    <line x1="35" y1="185" x2="85" y2="185" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+    <!-- Arms -->
+    <line x1="35" y1="185" x2="28" y2="300" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>
+    <line x1="85" y1="185" x2="92" y2="300" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>
+    <!-- Hips -->
+    <path d="M45 380 Q60 395 75 380" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>
+    <!-- Legs -->
+    <line x1="60" y1="380" x2="60" y2="520" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+    <!-- Feet -->
+    <ellipse cx="60" cy="530" rx="12" ry="4" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+
+    <!-- Labels -->
+    <g fill="rgba(255,255,255,.5)" font-size="10" font-family="Microsoft YaHei,sans-serif">
+      <text x="60" y="148" text-anchor="middle" fill="rgba(255,255,255,.6)">眼高</text>
+      <text x="95" y="230" fill="#e2b714" font-weight="bold">肩宽 ~40cm</text>
+      <text x="95" y="270" fill="#e2b714" font-weight="bold">臂长 ~55cm</text>
+      <text x="95" y="350" fill="#f5d742" font-weight="bold">肘高</text>
+      <text x="95" y="430" fill="#e2b714" font-weight="bold">腿长</text>
+    </g>
+  </g>
+
+  <!-- ===== Male Body (Right) ===== -->
+  <g transform="translate(280, 0)">
+    <!-- Head -->
+    <ellipse cx="60" cy="118" rx="22" ry="26" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+    <!-- Body -->
+    <line x1="60" y1="144" x2="60" y2="355" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
+    <!-- Shoulders (wider) -->
+    <line x1="28" y1="152" x2="92" y2="152" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
+    <!-- Arms -->
+    <line x1="28" y1="152" x2="20" y2="300" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+    <line x1="92" y1="152" x2="100" y2="300" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+    <!-- Legs -->
+    <line x1="60" y1="355" x2="60" y2="520" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
+    <!-- Feet -->
+    <ellipse cx="60" cy="532" rx="14" ry="5" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+
+    <g fill="rgba(255,255,255,.5)" font-size="10" font-family="Microsoft YaHei,sans-serif">
+      <text x="60" y="112" text-anchor="middle" fill="rgba(255,255,255,.6)">眼高</text>
+      <text x="105" y="200" fill="#e2b714" font-weight="bold">肩宽 ~45cm</text>
+      <text x="105" y="260" fill="#e2b714" font-weight="bold">臂长 ~60cm</text>
+      <text x="105" y="410" fill="#e2b714" font-weight="bold">腿长</text>
+    </g>
+  </g>
+
+  <!-- ===== Zone Overlay ===== -->
+  <!-- Golden zone highlight -->
+  <rect x="80" y="250" width="380" height="200" fill="url(#zone1g)" rx="4" stroke="#2ecc71" stroke-width="1.5" stroke-dasharray="6,3" opacity=".6"/>
+  <text x="300" y="265" text-anchor="middle" fill="#2ecc71" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">★ 黄金视觉区（70-140cm）</text>
+
+  <!-- Silver zone -->
+  <rect x="80" y="450" width="380" height="150" fill="url(#zone2g)" rx="4" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="6,3" opacity=".6"/>
+  <text x="300" y="465" text-anchor="middle" fill="#f39c12" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">◆ 次黄金区（140-170 / 40-70cm）</text>
+
+  <!-- Bronze zone -->
+  <rect x="80" y="600" width="380" height="150" fill="url(#zone3g)" rx="4" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="6,3" opacity=".6"/>
+  <text x="300" y="615" text-anchor="middle" fill="#e74c3c" font-size="12" font-weight="bold" font-family="Microsoft YaHei,sans-serif">● 低频区（>170 / <40cm）</text>
+
+  <!-- ===== Dimension Arrows ===== -->
+  <!-- Height marker female -->
+  <line x1="95" y1="115" x2="95" y2="530" stroke="#e2b714" stroke-width="1.5"/>
+  <polygon points="95,115 90,125 100,125" fill="#e2b714"/>
+  <polygon points="95,530 90,520 100,520" fill="#e2b714"/>
+  <text x="95" y="545" text-anchor="middle" fill="#e2b714" font-size="10" font-family="Microsoft YaHei,sans-serif">女 160cm</text>
+
+  <!-- Height marker male -->
+  <line x1="395" y1="88" x2="395" y2="532" stroke="#e2b714" stroke-width="1.5"/>
+  <polygon points="395,88 390,98 400,98" fill="#e2b714"/>
+  <polygon points="395,532 390,522 400,522" fill="#e2b714"/>
+  <text x="395" y="550" text-anchor="middle" fill="#e2b714" font-size="10" font-family="Microsoft YaHei,sans-serif">男 175cm</text>
+
+  <!-- Arm span -->
+  <line x1="108" y1="295" x2="390" y2="295" stroke="rgba(226,183,20,.5)" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="250" y="290" text-anchor="middle" fill="rgba(226,183,20,.6)" font-size="10" font-family="Microsoft YaHei,sans-serif">臂展范围</text>
+
+  <!-- Footer -->
+  <text x="300" y="870" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="11" font-family="Microsoft YaHei,sans-serif">数据来源：GB 10000-88 中国成年人人体尺寸 | 定制收纳设计参考</text>
+</svg>
