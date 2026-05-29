@@ -274,15 +274,15 @@ section{margin-bottom:20px}
 <button class="back-top no-print" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-// ===== Supabase REST API (no external SDK needed) =====
-const SB_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
-const SB_HEADERS = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' };
+// ===== Gitee API (国内数据存储) =====
+const GITEE_TOKEN = 'da49344488b843dc9927afa3bf169503';
+const GITEE_REPO = 'fei890915/storage-system';
+const GITEE_API = 'https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/data';
+
 const DATA_KEY = 'storage_survey_latest';
 let data = null;
 
 function loadData() {
-  // First check localStorage (for backward compatibility)
   const stored = localStorage.getItem(DATA_KEY);
   if (stored) {
     try {
@@ -291,20 +291,19 @@ function loadData() {
       return;
     } catch(e) {}
   }
-  // Otherwise fetch from Supabase
-  fetchSupabaseList();
+  fetchGiteeList();
 }
 
-async function fetchSupabaseList() {
+async function fetchGiteeList() {
   try {
-    const res = await fetch(SB_URL + '/rest/v1/submissions?select=id,client_name,created_at&order=created_at.desc', { headers: SB_HEADERS });
+    const res = await fetch(GITEE_API + '?access_token=' + GITEE_TOKEN);
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const list = await res.json();
-
+    const files = await res.json();
     document.getElementById('loadingView').style.display = 'none';
-
-    if (list && list.length > 0) {
-      showClientList(list);
+    if (files && files.length > 0) {
+      // Sort by name (desc = newest first)
+      files.sort((a,b) => b.name.localeCompare(a.name));
+      showClientList(files);
     } else {
       document.getElementById('emptyView').style.display = 'block';
     }
@@ -314,17 +313,23 @@ async function fetchSupabaseList() {
   }
 }
 
-function showClientList(list) {
+function showClientList(files) {
   const container = document.getElementById('emptyView');
   container.style.display = 'block';
+  const items = files.map(f => {
+    const parts = f.name.replace('.json','').split('_');
+    const ts = parseInt(parts[0]) || 0;
+    const clientName = parts.slice(1).join('_') || '未知客户';
+    return { name: clientName, time: new Date(ts).toLocaleString('zh-CN'), path: f.path };
+  });
   container.innerHTML = `
     <div class="icon" style="font-size:32px">📋</div>
     <h3>选择客户报告</h3>
-    <p style="margin-bottom:16px;font-size:12px;color:#B5A69A">共有 ${list.length} 位客户已提交数据</p>
+    <p style="margin-bottom:16px;font-size:12px;color:#B5A69A">共有 ${items.length} 位客户已提交数据</p>
     <div style="text-align:left;max-width:360px;margin:0 auto">
-      ${list.map(item => `
-        <div onclick="loadFromSupabase(${item.id})" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;margin-bottom:8px;background:#fff;border-radius:10px;cursor:pointer;box-shadow:0 1px 6px rgba(139,107,74,.1);transition:all .2s;border:1px solid #EDE4DA" onmouseover="this.style.borderColor='#8B6B4A'" onmouseout="this.style.borderColor='#EDE4DA'">
-          <div><div style="font-size:14px;font-weight:600;color:#3D2B1F">👤 ${item.client_name || '未知客户'}</div><div style="font-size:11px;color:#B5A69A;margin-top:2px">${new Date(item.created_at).toLocaleString('zh-CN')}</div></div>
+      ${items.map(item => `
+        <div onclick="loadFromGitee('${item.path}')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;margin-bottom:8px;background:#fff;border-radius:10px;cursor:pointer;box-shadow:0 1px 6px rgba(139,107,74,.1);transition:all .2s;border:1px solid #EDE4DA" onmouseover="this.style.borderColor='#8B6B4A'" onmouseout="this.style.borderColor='#EDE4DA'">
+          <div><div style="font-size:14px;font-weight:600;color:#3D2B1F">👤 ${item.name}</div><div style="font-size:11px;color:#B5A69A;margin-top:2px">${item.time}</div></div>
           <div style="font-size:18px;color:#8B6B4A">→</div>
         </div>
       `).join('')}
@@ -335,20 +340,16 @@ function showClientList(list) {
   `;
 }
 
-async function loadFromSupabase(id) {
+async function loadFromGitee(path) {
   document.getElementById('emptyView').style.display = 'none';
   document.getElementById('loadingView').style.display = 'block';
   try {
-    const res = await fetch(SB_URL + '/rest/v1/submissions?select=data,client_name,created_at&id=eq.' + id, { headers: SB_HEADERS });
+    const res = await fetch(GITEE_API + '/' + path.split('/').pop() + '?access_token=' + GITEE_TOKEN);
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const rows = await res.json();
-    const row = rows && rows[0];
-    if (row) {
-      data = row.data;
-      // Attach metadata for display
-      data._submitted_at = row.created_at;
-      renderReport();
-    }
+    const file = await res.json();
+    const json = decodeURIComponent(escape(atob(file.content)));
+    data = JSON.parse(json);
+    renderReport();
   } catch(e) {
     alert('加载失败，请重试');
     document.getElementById('loadingView').style.display = 'none';
@@ -737,7 +738,7 @@ window.addEventListener('scroll', ()=>{
 function backToList() {
   document.getElementById('sections').style.display = 'none';
   data = null;
-  fetchSupabaseList();
+  fetchGiteeList();
 }
 
 // ===== Init =====

@@ -411,8 +411,8 @@ function submitForm(){
 
   localStorage.setItem('storage_survey_latest', JSON.stringify(reportData));
 
-  // Save to Supabase via REST API
-  saveToSupabase(nm, reportData);
+  // Save to Gitee (国内数据存储)
+  saveToGitee(nm, reportData);
 
   // Show thank you
   document.querySelectorAll('section.active').forEach(s=>s.classList.remove('active'));
@@ -423,20 +423,24 @@ function submitForm(){
 // ===== Init =====
 initDots();
 
-// ===== Supabase REST API (no external SDK needed) =====
-const SB_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
-const SB_HEADERS = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+// ===== Gitee API (国内数据存储) =====
+const GITEE_TOKEN = 'da49344488b843dc9927afa3bf169503';
+const GITEE_REPO = 'fei890915/storage-system';
 
-async function saveToSupabase(name, data) {
+async function saveToGitee(name, data) {
   try {
-    const res = await fetch(SB_URL + '/rest/v1/submissions', {
+    const ts = Date.now();
+    const safeName = name.replace(/[^\w一-龥]/g,'_');
+    const filename = 'data/' + ts + '_' + safeName + '.json';
+    const json = JSON.stringify(data);
+    const content = btoa(unescape(encodeURIComponent(json)));
+    const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + filename, {
       method: 'POST',
-      headers: SB_HEADERS,
-      body: JSON.stringify({ client_name: name, data: data })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: GITEE_TOKEN, content: content, message: '客户提交: ' + name })
     });
-    if (!res.ok) console.warn('Supabase save error:', res.status, await res.text().catch(()=>''));
-  } catch(e) { console.warn('Supabase save error:', e) }
+    if (!res.ok) console.warn('Gitee save error:', res.status);
+  } catch(e) { console.warn('Gitee save error:', e) }
 }
 </script>
 </head>
