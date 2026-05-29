@@ -435,7 +435,7 @@ const GITEE_REPO = 'fei890915/storage-system';
 async function saveToGitee(name, data) {
   try {
     const ts = Date.now();
-    const filename = 'sub_' + ts + '_' + name.replace(/[^\w\s]/g,'').trim().slice(0,20) + '.json';
+    const filename = 'sub_' + ts + '_' + name.replace(/[^\w一-龥]/g,'_').slice(0,30) + '.json';
     const json = JSON.stringify(data);
     const content = btoa(unescape(encodeURIComponent(json)));
     const res = await fetch('https://gitee.com/api/v5/repos/' + GITEE_REPO + '/contents/' + encodeURIComponent(filename), {
