@@ -146,8 +146,313 @@ input:focus{border-color:#C4956A;background:#fff;box-shadow:0 0 0 3px rgba(196,1
 .fade-in{animation:fadeIn .5s ease forwards}
 @keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 </style>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+// ===== Navigation =====
+const TOTAL = 8;
+let cur = 0;
+let mCount = 3;
+
+function initDots() {
+  const d = document.getElementById('stepDots');
+  d.innerHTML = '';
+  for(let i=1;i<=TOTAL;i++){const dot=document.createElement('div');dot.className='dot';d.appendChild(dot)}
+}
+
+function start(){
+  document.getElementById('sec-cover').style.display='none';
+  document.getElementById('topBar').classList.add('show');
+  show(1);
+}
+
+function show(n){
+  for(let i=1;i<=TOTAL;i++){const s=document.getElementById('sec-'+i);if(s)s.classList.remove('active')}
+  const sec=document.getElementById('sec-'+n);
+  if(sec){sec.classList.add('active');sec.querySelectorAll('.card,.ill-card').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(16px)';setTimeout(()=>{el.style.transition='all .4s ease';el.style.opacity='1';el.style.transform='translateY(0)'},i*60)})}
+  cur=n;
+  document.getElementById('stepLabel').textContent=String(n).padStart(2,'0')+' / '+String(TOTAL).padStart(2,'0');
+  const dots=document.querySelectorAll('.dot');
+  dots.forEach((d,i)=>{d.classList.toggle('active',i<n)});
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===2)initMembers();
+  if(n===4)initDeclutter();
+  if(n===5)initFreq();
+}
+
+function go(n){
+  if(cur===1&&!document.getElementById('name').value.trim())return toast('请填写您的姓名');
+  show(n);
+}
+function back(n){show(n)}
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500)}
+
+// ===== Step 2: Members =====
+function initMembers(){
+  const c=document.getElementById('members');c.innerHTML='';
+  const rels=['户主','配偶','子女','子女2','长辈'];
+  for(let i=0;i<mCount;i++){
+    const r=rels[i]||'成员'+(i+1);
+    const colors=['#8B6B4A','#C4956A','#8FA88A','#C0784A','#D4A574'];
+    const div=document.createElement('div');
+    div.style.cssText='background:#FDF8F3;border-radius:10px;padding:12px;margin-bottom:10px';
+    div.innerHTML=`
+      <div style="font-size:13px;font-weight:600;color:#8B6B4A;margin-bottom:8px"><span style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:${colors[i%5]};color:#fff;align-items:center;justify-content:center;font-size:11px;margin-right:6px">${r[0]}</span>${r}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <input type="number" placeholder="身高cm" class="mh" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'h',this.value)">
+        <input type="number" placeholder="体重kg" class="mw" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'w',this.value)">
+        <input type="number" placeholder="鞋码" class="ms" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'s',this.value)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <input type="number" placeholder="肩宽cm" class="msh" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'sh',this.value)">
+        <input type="number" placeholder="臂长cm" class="ma" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'a',this.value)">
+      </div>
+    `;
+    c.appendChild(div);
+  }
+  updateSummary();
+}
+
+const MEM=Array(5).fill(0).map(()=>({}));
+function updateMember(i,k,v){MEM[i]=MEM[i]||{};MEM[i][k]=v}
+
+// ===== Step 3: Pain Points =====
+function painCheck(){
+  const checks=document.querySelectorAll('#sec-3 .area-chk input:checked');
+  const container=document.getElementById('painDetail');
+  container.innerHTML='';
+  checks.forEach(cb=>{
+    const area=cb.value;
+    const div=document.createElement('div');
+    div.style.cssText='background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid #E8DDD0';
+    div.innerHTML=`
+      <div style="font-size:12px;font-weight:600;color:#8B6B4A;margin-bottom:6px">${area}</div>
+      <div class="sev-wrap" style="margin-bottom:8px">
+        ${['★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'].map((s,j)=>`
+          <label class="sev-btn" style="flex:1;padding:6px 0;border-radius:6px;border:1.5px solid #E8DDD0;cursor:pointer;text-align:center;font-size:11px;background:#FAF8F5;color:#B5A69A">
+            <input type="radio" name="sev_${area}" value="${j+1}" onchange="updatePain('${area}',${j+1})">${s}
+          </label>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:6px">
+        <input type="text" placeholder="具体痛点描述（如：鞋子太多放不下）" style="flex:1;padding:8px 10px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none" onchange="updatePainDesc('${area}',this.value)">
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  updateSummary();
+}
+const PAIN={};
+function updatePain(a,v){PAIN[a]=PAIN[a]||{};PAIN[a].sev=v}
+function updatePainDesc(a,v){PAIN[a]=PAIN[a]||{};PAIN[a].desc=v}
+
+// ===== Step 4: Declutter =====
+const KEEP_Q=['闲置1年以上的物品会如何处理？','不喜欢的礼物会如何处理？','过期护肤品/药品会立即丢弃吗？','破旧衣服会如何处理？','包装盒/说明书会保留吗？','「以后可能用到」的物品态度是？','购物小票/杂志如何处理？','孩子的旧玩具/作业如何处理？'];
+const BUY_Q=['买前会先思考存放位置吗？','容易冲动购物吗？','有囤货习惯吗？','买衣会考虑搭配现有衣物吗？','每周网购包裹数量？'];
+const DA={};
+
+function initDeclutter(){
+  const kc=document.getElementById('keepQs');kc.innerHTML='';
+  const bc=document.getElementById('buyQs');bc.innerHTML='';
+  KEEP_Q.forEach((q,i)=>{
+    const k='k'+i;if(DA[k]===undefined)DA[k]=3;
+    const div=document.createElement('div');div.className='rating-row';
+    div.innerHTML=`<div class="q">${i+1}. ${q}</div><div class="rating-opts">${[1,2,3,4,5].map(v=>'<label class="rating-o '+(DA[k]===v?'active':'')+'" onclick="setDA(\''+k+'\','+v+')" style="'+(DA[k]===v?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':'')+'">'+v+'</label>').join('')}</div>`;
+    kc.appendChild(div);
+  });
+  BUY_Q.forEach((q,i)=>{
+    const k='b'+i;if(DA[k]===undefined)DA[k]=3;
+    const div=document.createElement('div');div.className='rating-row';
+    div.innerHTML=`<div class="q">${i+1}. ${q}</div><div class="rating-opts">${[1,2,3,4,5].map(v=>'<label class="rating-o '+(DA[k]===v?'active':'')+'" onclick="setDA(\''+k+'\','+v+')" style="'+(DA[k]===v?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':'')+'">'+v+'</label>').join('')}</div>`;
+    bc.appendChild(div);
+  });
+  calcD();
+}
+
+function setDA(k,v){DA[k]=v;initDeclutter();}
+function calcD(){
+  const vals=Object.values(DA);if(!vals.length)return;
+  const total=vals.reduce((a,b)=>a+b,0);const max=KEEP_Q.length+BUY_Q.length;
+  document.getElementById('dScore').textContent=total;
+  const tags=['dTag1','dTag2','dTag3','dTag4'];
+  tags.forEach(t=>document.getElementById(t).classList.remove('on'));
+  let type='',strategy='';
+  if(total<=25){type='重度保留型';strategy='增加储物容量为优先，设计更多封闭式收纳，少做开放式展架。引导客户逐步断舍离。';document.getElementById('dTag1').classList.add('on')}
+  else if(total<=40){type='适度保留型';strategy='封闭+开放结合，预留20%弹性空间，建议分批筛选物品渐进式优化。';document.getElementById('dTag2').classList.add('on')}
+  else if(total<=55){type='倾向精简型';strategy='注重展示性收纳，精细化分区，高品质收纳配件，强调秩序美感。';document.getElementById('dTag3').classList.add('on')}
+  else{type='极简主义者';strategy='极致简洁设计，强调美学与空间感，低密度收纳方案，注重留白。';document.getElementById('dTag4').classList.add('on')}
+  document.getElementById('dType').textContent='诊断结果：'+type+'（'+total+'分）';
+  document.getElementById('dAdvice').innerHTML='<strong style="color:#8B6B4A;">推荐策略：</strong>'+strategy;
+  updateSummary();
+}
+
+// ===== Step 5: Frequency =====
+const FREQ_ITEMS=[
+  {area:'玄关',item:'当季常穿鞋'},{area:'玄关',item:'钥匙/门卡'},{area:'玄关',item:'包包'},
+  {area:'客厅',item:'遥控器'},{area:'客厅',item:'书籍/杂志'},{area:'客厅',item:'药品'},
+  {area:'厨房',item:'锅具'},{area:'厨房',item:'调料'},{area:'厨房',item:'小家电'},
+  {area:'主卧',item:'当季上装'},{area:'主卧',item:'当季下装'},{area:'主卧',item:'内衣/袜'},
+  {area:'主卧',item:'床品套件'},{area:'主卧',item:'换季衣物'},
+  {area:'卫生间',item:'护肤品'},{area:'卫生间',item:'洗漱用品'},{area:'卫生间',item:'囤货'},
+  {area:'儿童房',item:'日常衣物'},{area:'儿童房',item:'玩具'},{area:'儿童房',item:'绘本/学习'}
+];
+const FR={};
+const FREQ_OPTS=['每日','每周','每月','每季','低频'];
+
+function initFreq(){
+  const c=document.getElementById('freqList');c.innerHTML='';
+  FREQ_ITEMS.forEach((item,i)=>{
+    const k='f'+i;if(FR[k]===undefined)FR[k]='每日';
+    const div=document.createElement('div');div.className='freq-row';
+    div.innerHTML='<span class="farea" style="color:#B5A69A">'+item.area+'</span><span class="fname">'+item.item+'</span><div class="freq-opts">'+FREQ_OPTS.map(f=>'<label class="freq-o '+(FR[k]===f?'active':'')+'" onclick="setFR(\''+k+'\',\''+f+'\')" style="'+(FR[k]===f?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':'')+'">'+f+'</label>').join('')+'</div>';
+    c.appendChild(div);
+  });
+  updateSummary();
+}
+function setFR(k,v){FR[k]=v;initFreq();}
+
+// ===== Summary =====
+function updateSummary(){
+  document.getElementById('sumName').textContent=document.getElementById('name').value.trim()||'未填写';
+  document.getElementById('sumMembers').textContent=mCount;
+  document.getElementById('sumPain').textContent=document.querySelectorAll('#sec-3 .area-chk input:checked').length;
+  document.getElementById('sumScore').textContent=document.getElementById('dScore').textContent;
+  document.getElementById('sumFreq').textContent=Object.keys(FR).length;
+}
+
+// ===== Submit =====
+function submitForm(){
+  const nm=document.getElementById('name').value.trim()||'未填写';
+  const rows=[];
+  const add=(mod,field,val)=>{rows.push({模块:mod,字段:field,回答:val!=null?String(val):'未填'})};
+
+  // Step 1
+  add('基本信息','姓名',nm);
+  add('基本信息','手机号',document.getElementById('phone').value);
+  add('基本信息','微信',document.getElementById('wechat').value);
+  const ht=document.querySelector('input[name="ht"]:checked');
+  add('基本信息','住宅类型',ht?ht.value:null);
+  add('基本信息','面积',document.getElementById('area').value);
+  add('基本信息','常住人口',document.getElementById('pop').value);
+  const hs=document.querySelector('input[name="hs"]:checked');
+  add('基本信息','房屋状态',hs?hs.value:null);
+  const pt=document.querySelector('input[name="pt"]:checked');
+  add('基本信息','项目类型',pt?pt.value:null);
+  const bg=document.querySelector('input[name="bg"]:checked');
+  add('基本信息','预算范围',bg?bg.value:null);
+  const src=document.querySelector('input[name="src"]:checked');
+  add('基本信息','信息来源',src?src.value:null);
+
+  // Step 2
+  for(let i=0;i<mCount;i++){
+    const m=MEM[i]||{};
+    add('体态参数','成员'+(i+1)+'_身高',m.h);
+    add('体态参数','成员'+(i+1)+'_体重',m.w);
+    add('体态参数','成员'+(i+1)+'_鞋码',m.s);
+    add('体态参数','成员'+(i+1)+'_肩宽',m.sh);
+    add('体态参数','成员'+(i+1)+'_臂长',m.a);
+  }
+
+  // Step 3
+  document.querySelectorAll('#sec-3 .area-chk input:checked').forEach(cb=>{
+    const a=cb.value;const p=PAIN[a]||{};
+    add('痛点分析','区域',a);
+    add('痛点分析',a+'_严重程度',p.sev?'★'.repeat(p.sev):null);
+    add('痛点分析',a+'_描述',p.desc);
+  });
+
+  // Step 4
+  KEEP_Q.forEach((q,i)=>{const k='k'+i;add('断舍离-保留倾向',q,DA[k])});
+  BUY_Q.forEach((q,i)=>{const k='b'+i;add('断舍离-购买习惯',q,DA[k])});
+
+  // Step 5
+  FREQ_ITEMS.forEach((item,i)=>{const k='f'+i;add('使用频率',item.area+'-'+item.item,FR[k])});
+
+  // Step 6 - Morning
+  const mr=document.querySelector('input[name="mr"]:checked');
+  add('动线分析','清晨动线起点',mr?mr.value:null);
+  document.querySelectorAll('input[name="mm[]"]:checked').forEach(cb=>add('动线分析','清晨动线-'+cb.value,'是'));
+  const mf=document.querySelector('input[name="mf"]:checked');
+  add('动线分析','清晨第一件事',mf?mf.value:null);
+
+  // Step 6 - Evening
+  const er=document.querySelector('input[name="er"]:checked');
+  add('动线分析','晚间动线起点',er?er.value:null);
+  document.querySelectorAll('input[name="em[]"]:checked').forEach(cb=>add('动线分析','晚间动线-'+cb.value,'是'));
+  document.querySelectorAll('input[name="ef[]"]:checked').forEach(cb=>add('动线分析','出门常忘物品',cb.value));
+
+  // Step 6 - Storage habits
+  document.querySelectorAll('input[name="zh[]"]:checked').forEach(cb=>add('动线分析','玄关需求',cb.value));
+  const zk=document.querySelector('input[name="zk"]:checked');
+  add('动线分析','玄关开放格',zk?zk.value:null);
+
+  // Step 7
+  document.querySelectorAll('input[name="shop[]"]:checked').forEach(cb=>add('生活习惯','购物习惯',cb.value));
+  document.querySelectorAll('input[name="style[]"]:checked').forEach(cb=>add('生活习惯','收纳风格偏好',cb.value));
+  const pet=document.querySelector('input[name="pet"]:checked');
+  add('生活习惯','宠物',pet?pet.value:null);
+  document.querySelectorAll('input[name="hobby"]:checked').forEach(cb=>add('生活习惯','兴趣爱好',cb.value));
+  const note=document.getElementById('noteNote');
+  add('生活习惯','补充说明',note?note.value:null);
+
+  // Excel
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.json_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb,ws,'客户数据');
+  XLSX.writeFile(wb,'收纳客户数据_'+nm+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+
+  // Report data
+  const reportData = {
+    _name: nm,
+    _phone: document.getElementById('phone').value,
+    _wechat: document.getElementById('wechat').value,
+    _houseType: ht?ht.value:null,
+    _area: document.getElementById('area').value,
+    _pop: document.getElementById('pop').value,
+    _houseStatus: hs?hs.value:null,
+    _projectType: pt?pt.value:null,
+    _budget: bg?bg.value:null,
+    _source: src?src.value:null,
+    _memberCount: mCount,
+    MEM, PAIN, DA, FR
+  };
+
+  localStorage.setItem('storage_survey_latest', JSON.stringify(reportData));
+
+  // Save to Supabase (only if SDK loaded)
+  if (window._supabase) {
+    try {
+      window._supabase.from('submissions').insert({
+        client_name: nm,
+        data: reportData
+      }).then(r=>{if(r.error)console.warn('Supabase insert error:',r.error)});
+    } catch(e) { console.warn('Supabase error:', e) }
+  }
+
+  // Show thank you
+  document.querySelectorAll('section.active').forEach(s=>s.classList.remove('active'));
+  document.getElementById('topBar').classList.remove('show');
+  document.getElementById('thanks').style.display='block';
+}
+
+// ===== Init =====
+initDots();
+
+// ===== Supabase (loads async, init when ready) =====
+const SUPABASE_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
+function initSupabase() {
+  if (typeof window.supabase !== 'undefined') {
+    try {
+      window._supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } catch(e) { console.warn('Supabase init error:', e) }
+  }
+}
+// Try immediately and also after defer scripts load
+initSupabase();
+document.addEventListener('DOMContentLoaded', initSupabase);
+</script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
 </head>
 <body>
 
@@ -1314,342 +1619,5 @@ input:focus{border-color:#C4956A;background:#fff;box-shadow:0 0 0 3px rgba(196,1
 <!-- ===== TOAST ===== -->
 <div class="toast" id="toast"></div>
 
-<script>
-// ===== Navigation =====
-const TOTAL = 8;
-let cur = 0;
-let mCount = 3;
-
-function initDots() {
-  const d = document.getElementById('stepDots');
-  d.innerHTML = '';
-  for(let i=1;i<=TOTAL;i++){const dot=document.createElement('div');dot.className='dot';d.appendChild(dot)}
-}
-
-function start(){
-  document.getElementById('sec-cover').style.display='none';
-  document.getElementById('topBar').classList.add('show');
-  show(1);
-}
-
-function show(n){
-  for(let i=1;i<=TOTAL;i++){const s=document.getElementById('sec-'+i);if(s)s.classList.remove('active')}
-  const sec=document.getElementById('sec-'+n);
-  if(sec){sec.classList.add('active');sec.querySelectorAll('.card,.ill-card').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(16px)';setTimeout(()=>{el.style.transition='all .4s ease';el.style.opacity='1';el.style.transform='translateY(0)'},i*60)})}
-  cur=n;
-  // top bar
-  document.getElementById('stepLabel').textContent=String(n).padStart(2,'0')+' / '+String(TOTAL).padStart(2,'0');
-  const dots=document.querySelectorAll('.dot');
-  dots.forEach((d,i)=>{d.classList.toggle('active',i<n)});
-  window.scrollTo({top:0,behavior:'smooth'});
-  // init
-  if(n===2)initMembers();
-  if(n===4)initDeclutter();
-  if(n===5)initFreq();
-}
-
-function go(n){
-  if(cur===1&&!document.getElementById('name').value.trim())return toast('请填写您的姓名');
-  show(n);
-}
-function back(n){show(n)}
-
-// ===== Toast =====
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500)}
-
-// ===== Step 2: Members =====
-function initMembers(){
-  const c=document.getElementById('members');c.innerHTML='';
-  const rels=['户主','配偶','子女','子女2','长辈'];
-  for(let i=0;i<mCount;i++){
-    const r=rels[i]||'成员'+(i+1);
-    const colors=['#8B6B4A','#C4956A','#8FA88A','#C0784A','#D4A574'];
-    const div=document.createElement('div');
-    div.style.cssText='background:#FDF8F3;border-radius:10px;padding:12px;margin-bottom:10px';
-    div.innerHTML=`
-      <div style="font-size:13px;font-weight:600;color:#8B6B4A;margin-bottom:8px"><span style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:${colors[i%5]};color:#fff;align-items:center;justify-content:center;font-size:11px;margin-right:6px">${r[0]}</span>${r}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
-        <input type="number" placeholder="身高cm" class="mh" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'h',this.value)">
-        <input type="number" placeholder="体重kg" class="mw" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'w',this.value)">
-        <input type="number" placeholder="鞋码" class="ms" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'s',this.value)">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
-        <input type="number" placeholder="肩宽cm" class="msh" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'sh',this.value)">
-        <input type="number" placeholder="臂长cm" class="ma" style="width:100%;padding:8px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none;background:#fff" onchange="updateMember(${i},'a',this.value)">
-      </div>
-    `;
-    c.appendChild(div);
-  }
-  updateSummary();
-}
-
-const MEM=Array(5).fill(0).map(()=>({}));
-function updateMember(i,k,v){MEM[i]=MEM[i]||{};MEM[i][k]=v}
-
-// ===== Step 3: Pain Points =====
-function painCheck(){
-  const checks=document.querySelectorAll('#sec-3 .area-chk input:checked');
-  const container=document.getElementById('painDetail');
-  container.innerHTML='';
-  checks.forEach(cb=>{
-    const area=cb.value;
-    const div=document.createElement('div');
-    div.style.cssText='background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid #E8DDD0';
-    div.innerHTML=`
-      <div style="font-size:12px;font-weight:600;color:#8B6B4A;margin-bottom:6px">${area}</div>
-      <div class="sev-wrap" style="margin-bottom:8px">
-        ${['★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'].map((s,j)=>`
-          <label class="sev-btn" style="flex:1;padding:6px 0;border-radius:6px;border:1.5px solid #E8DDD0;cursor:pointer;text-align:center;font-size:11px;background:#FAF8F5;color:#B5A69A">
-            <input type="radio" name="sev_${area}" value="${j+1}" onchange="updatePain('${area}',${j+1})">${s}
-          </label>
-        `).join('')}
-      </div>
-      <div style="display:flex;gap:6px">
-        <input type="text" placeholder="具体痛点描述（如：鞋子太多放不下）" style="flex:1;padding:8px 10px;border:1.5px solid #E8DDD0;border-radius:8px;font-size:12px;outline:none" onchange="updatePainDesc('${area}',this.value)">
-      </div>
-    `;
-    container.appendChild(div);
-  });
-  updateSummary();
-}
-const PAIN={};
-function updatePain(a,v){PAIN[a]=PAIN[a]||{};PAIN[a].sev=v}
-function updatePainDesc(a,v){PAIN[a]=PAIN[a]||{};PAIN[a].desc=v}
-
-// ===== Step 4: Declutter =====
-const KEEP_Q=['闲置1年以上的物品会如何处理？','不喜欢的礼物会如何处理？','过期护肤品/药品会立即丢弃吗？','破旧衣服会如何处理？','包装盒/说明书会保留吗？','「以后可能用到」的物品态度是？','购物小票/杂志如何处理？','孩子的旧玩具/作业如何处理？'];
-const BUY_Q=['买前会先思考存放位置吗？','容易冲动购物吗？','有囤货习惯吗？','买衣会考虑搭配现有衣物吗？','每周网购包裹数量？'];
-const DA={};
-
-function initDeclutter(){
-  const kc=document.getElementById('keepQs');kc.innerHTML='';
-  const bc=document.getElementById('buyQs');bc.innerHTML='';
-  KEEP_Q.forEach((q,i)=>{
-    const k='k'+i;if(DA[k]===undefined)DA[k]=3;
-    const div=document.createElement('div');div.className='rating-row';
-    div.innerHTML=`<div class="q">${i+1}. ${q}</div><div class="rating-opts">${[1,2,3,4,5].map(v=>`<label class="rating-o ${DA[k]===v?'active':''}" onclick="setDA('${k}',${v})" style="${DA[k]===v?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':''}">${v}</label>`).join('')}</div>`;
-    kc.appendChild(div);
-  });
-  BUY_Q.forEach((q,i)=>{
-    const k='b'+i;if(DA[k]===undefined)DA[k]=3;
-    const div=document.createElement('div');div.className='rating-row';
-    div.innerHTML=`<div class="q">${i+1}. ${q}</div><div class="rating-opts">${[1,2,3,4,5].map(v=>`<label class="rating-o ${DA[k]===v?'active':''}" onclick="setDA('${k}',${v})" style="${DA[k]===v?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':''}">${v}</label>`).join('')}</div>`;
-    bc.appendChild(div);
-  });
-  calcD();
-}
-
-function setDA(k,v){DA[k]=v;initDeclutter();}
-function calcD(){
-  const vals=Object.values(DA);if(!vals.length)return;
-  const total=vals.reduce((a,b)=>a+b,0);const max=KEEP_Q.length+BUY_Q.length;
-  document.getElementById('dScore').textContent=total;
-  const tags=['dTag1','dTag2','dTag3','dTag4'];
-  tags.forEach(t=>document.getElementById(t).classList.remove('on'));
-  let type='',strategy='';
-  if(total<=25){type='重度保留型';strategy='增加储物容量为优先，设计更多封闭式收纳，少做开放式展架。引导客户逐步断舍离。';document.getElementById('dTag1').classList.add('on')}
-  else if(total<=40){type='适度保留型';strategy='封闭+开放结合，预留20%弹性空间，建议分批筛选物品渐进式优化。';document.getElementById('dTag2').classList.add('on')}
-  else if(total<=55){type='倾向精简型';strategy='注重展示性收纳，精细化分区，高品质收纳配件，强调秩序美感。';document.getElementById('dTag3').classList.add('on')}
-  else{type='极简主义者';strategy='极致简洁设计，强调美学与空间感，低密度收纳方案，注重留白。';document.getElementById('dTag4').classList.add('on')}
-  document.getElementById('dType').textContent='诊断结果：'+type+'（'+total+'分）';
-  document.getElementById('dAdvice').innerHTML='<strong style="color:#8B6B4A;">推荐策略：</strong>'+strategy;
-  updateSummary();
-}
-
-// ===== Step 5: Frequency =====
-const FREQ_ITEMS=[
-  {area:'玄关',item:'当季常穿鞋'},{area:'玄关',item:'钥匙/门卡'},{area:'玄关',item:'包包'},
-  {area:'客厅',item:'遥控器'},{area:'客厅',item:'书籍/杂志'},{area:'客厅',item:'药品'},
-  {area:'厨房',item:'锅具'},{area:'厨房',item:'调料'},{area:'厨房',item:'小家电'},
-  {area:'主卧',item:'当季上装'},{area:'主卧',item:'当季下装'},{area:'主卧',item:'内衣/袜'},
-  {area:'主卧',item:'床品套件'},{area:'主卧',item:'换季衣物'},
-  {area:'卫生间',item:'护肤品'},{area:'卫生间',item:'洗漱用品'},{area:'卫生间',item:'囤货'},
-  {area:'儿童房',item:'日常衣物'},{area:'儿童房',item:'玩具'},{area:'儿童房',item:'绘本/学习'}
-];
-const FR={};
-const FREQ_OPTS=['每日','每周','每月','每季','低频'];
-
-function initFreq(){
-  const c=document.getElementById('freqList');c.innerHTML='';
-  FREQ_ITEMS.forEach((item,i)=>{
-    const k='f'+i;if(FR[k]===undefined)FR[k]='每日';
-    const div=document.createElement('div');div.className='freq-row';
-    div.innerHTML=`<span class="farea" style="color:#B5A69A">${item.area}</span><span class="fname">${item.item}</span><div class="freq-opts">${FREQ_OPTS.map(f=>`<label class="freq-o ${FR[k]===f?'active':''}" onclick="setFR('${k}','${f}')" style="${FR[k]===f?'background:#8B6B4A;border-color:#8B6B4A;color:#fff;font-weight:600':''}">${f}</label>`).join('')}</div>`;
-    c.appendChild(div);
-  });
-  updateSummary();
-}
-function setFR(k,v){FR[k]=v;initFreq();}
-
-// ===== Summary =====
-function updateSummary(){
-  document.getElementById('sumName').textContent=document.getElementById('name').value.trim()||'未填写';
-  document.getElementById('sumMembers').textContent=mCount;
-  document.getElementById('sumPain').textContent=document.querySelectorAll('#sec-3 .area-chk input:checked').length;
-  document.getElementById('sumScore').textContent=document.getElementById('dScore').textContent;
-  document.getElementById('sumFreq').textContent=Object.keys(FR).length;
-}
-
-// ===== Submit =====
-function submitForm(){
-  // Collect all data
-  const nm=document.getElementById('name').value.trim()||'未填写';
-  const rows=[];
-  const add=(mod,field,val)=>{rows.push({模块:mod,字段:field,回答:val!=null?String(val):'未填'})};
-
-  // 基本信息
-  add('基本信息','客户姓名',nm);
-  add('基本信息','手机号',document.getElementById('phone').value.trim());
-  add('基本信息','微信',document.getElementById('wechat').value);
-  add('基本信息','住宅类型',document.querySelector('[name=ht]:checked')?.value);
-  add('基本信息','面积(㎡)',document.getElementById('area').value);
-  add('基本信息','常住人口',document.getElementById('pop').value);
-  add('基本信息','房屋状态',document.querySelector('[name=hs]:checked')?.value);
-  add('基本信息','项目类型',document.querySelector('[name=pt]:checked')?.value);
-  add('基本信息','预算范围',document.querySelector('[name=bg]:checked')?.value);
-  add('基本信息','信息来源',document.querySelector('[name=src]:checked')?.value);
-
-  // 体态参数
-  for(let i=0;i<mCount;i++){
-    const rels=['户主','配偶','子女','子女2','长辈'];
-    const r=rels[i]||'成员'+(i+1);
-    if(MEM[i]&&MEM[i].h) add('体态参数',r+' 身高(cm)',MEM[i].h);
-    if(MEM[i]&&MEM[i].w) add('体态参数',r+' 体重(kg)',MEM[i].w);
-    if(MEM[i]&&MEM[i].s) add('体态参数',r+' 鞋码',MEM[i].s);
-    if(MEM[i]&&MEM[i].sh) add('体态参数',r+' 肩宽(cm)',MEM[i].sh);
-    if(MEM[i]&&MEM[i].a) add('体态参数',r+' 臂长(cm)',MEM[i].a);
-  }
-
-  // 痛点
-  const painAreas=document.querySelectorAll('#sec-3 .area-chk input:checked');
-  painAreas.forEach(cb=>{
-    const a=cb.value;
-    const sev=PAIN[a]?.sev||'';
-    const desc=PAIN[a]?.desc||'';
-    add('痛点诊断',a+' 严重程度',sev+'★');
-    if(desc) add('痛点诊断',a+' 具体描述',desc);
-  });
-
-  // 断舍离
-  const KEEP_Q=['闲置1年以上的物品会如何处理？','不喜欢的礼物会如何处理？','过期护肤品/药品会立即丢弃吗？','破旧衣服会如何处理？','包装盒/说明书会保留吗？','「以后可能用到」的物品态度是？','购物小票/杂志如何处理？','孩子的旧玩具/作业如何处理？'];
-  const BUY_Q=['买前会先思考存放位置吗？','容易冲动购物吗？','有囤货习惯吗？','买衣会考虑搭配现有衣物吗？','每周网购包裹数量？'];
-  for(let i=0;i<KEEP_Q.length;i++){const v=DA['k'+i];if(v!==undefined)add('断舍离-保留倾向',KEEP_Q[i],v+'分')}
-  for(let i=0;i<BUY_Q.length;i++){const v=DA['b'+i];if(v!==undefined)add('断舍离-购买习惯',BUY_Q[i],v+'分')}
-  const vals=Object.values(DA);
-  if(vals.length){const total=vals.reduce((a,b)=>a+b,0);add('断舍离','总分',total+'分');
-    let type='';if(total<=25)type='重度保留型';else if(total<=40)type='适度保留型';else if(total<=55)type='倾向精简型';else type='极简主义者';
-    add('断舍离','诊断类型',type)}
-
-  // 使用频率
-  const FREQ_ITEMS=['当季常穿鞋','钥匙/门卡','包包','遥控器','书籍/杂志','药品','锅具','调料','小家电','当季上装','当季下装','内衣/袜','床品套件','换季衣物','护肤品','洗漱用品','囤货','日常衣物','玩具','绘本/学习'];
-  const FREQ_AREAS=['玄关','玄关','玄关','客厅','客厅','客厅','厨房','厨房','厨房','主卧','主卧','主卧','主卧','主卧','卫生间','卫生间','卫生间','儿童房','儿童房','儿童房'];
-  for(let i=0;i<FREQ_ITEMS.length;i++){const v=FR['f'+i];if(v)add('使用频率',FREQ_AREAS[i]+'-'+FREQ_ITEMS[i],v)}
-
-  // 动线
-  add('动线分析','清晨动线类型',document.querySelector('[name=morning]:checked')?.value);
-  const lost=[...document.querySelectorAll('[name=lost]:checked')].map(e=>e.value);
-  if(lost.length) add('动线分析','出门常找不到',lost.join('、'));
-  add('动线分析','晚间动线类型',document.querySelector('[name=evening]:checked')?.value);
-  add('动线分析','外套/包包放置',document.querySelector('[name=coat]:checked')?.value);
-
-  // 生活习惯
-  add('生活习惯','起床时间',document.getElementById('wake').value);
-  add('生活习惯','就寝时间',document.getElementById('sleep').value);
-  add('生活习惯','在家用早餐',document.querySelector('[name=bf]:checked')?.value);
-  add('生活习惯','在家做晚餐',document.querySelector('[name=df]:checked')?.value);
-  add('生活习惯','居家办公',document.querySelector('[name=wfh]:checked')?.value);
-  add('生活习惯','采购频率',document.getElementById('shopFreq').value);
-  add('生活习惯','买菜渠道',document.getElementById('shopCh').value);
-  add('生活习惯','购物风格',document.querySelector('[name=hoard]:checked')?.value);
-  add('生活习惯','收纳风格',document.querySelector('[name=org]:checked')?.value);
-  add('生活习惯','折叠衣物态度',document.querySelector('[name=fold]:checked')?.value);
-  add('生活习惯','可视化收纳偏好',document.querySelector('[name=vis]:checked')?.value);
-  add('生活习惯','运动频率',document.getElementById('fit').value);
-  add('生活习惯','宠物',document.querySelector('[name=pet]:checked')?.value);
-  const hobbies=[...document.querySelectorAll('#sec-7 [type=checkbox]:checked')].map(e=>e.value);
-  if(hobbies.length) add('生活习惯','爱好/收藏',hobbies.join('、'));
-  add('生活习惯','特殊需求',document.getElementById('special').value);
-
-  // Save to localStorage (rows for Excel backup)
-  localStorage.setItem('storage_survey_'+Date.now(),JSON.stringify(rows));
-
-  // Save structured data for analysis report
-  const reportData = {
-    basic: {
-      name: nm,
-      phone: document.getElementById('phone').value.trim(),
-      wechat: document.getElementById('wechat').value,
-      homeType: document.querySelector('[name=ht]:checked')?.value,
-      area: document.getElementById('area').value,
-      pop: document.getElementById('pop').value,
-      houseStatus: document.querySelector('[name=hs]:checked')?.value,
-      projectType: document.querySelector('[name=pt]:checked')?.value,
-      budget: document.querySelector('[name=bg]:checked')?.value,
-      source: document.querySelector('[name=src]:checked')?.value
-    },
-    members: MEM.slice(0, mCount),
-    painPoints: PAIN,
-    declutter: DA,
-    freq: FR,
-    morning: {
-      flow: document.querySelector('[name=morning]:checked')?.value,
-      lost: [...document.querySelectorAll('[name=lost]:checked')].map(e=>e.value)
-    },
-    evening: {
-      flow: document.querySelector('[name=evening]:checked')?.value,
-      coat: document.querySelector('[name=coat]:checked')?.value
-    },
-    lifestyle: {
-      wake: document.getElementById('wake').value,
-      sleep: document.getElementById('sleep').value,
-      breakfast: document.querySelector('[name=bf]:checked')?.value,
-      dinner: document.querySelector('[name=df]:checked')?.value,
-      wfh: document.querySelector('[name=wfh]:checked')?.value,
-      shopFreq: document.getElementById('shopFreq').value,
-      shopCh: document.getElementById('shopCh').value,
-      hoard: document.querySelector('[name=hoard]:checked')?.value,
-      org: document.querySelector('[name=org]:checked')?.value,
-      fold: document.querySelector('[name=fold]:checked')?.value,
-      vis: document.querySelector('[name=vis]:checked')?.value,
-      fit: document.getElementById('fit').value,
-      pet: document.querySelector('[name=pet]:checked')?.value,
-      hobbies: [...document.querySelectorAll('#sec-7 [type=checkbox]:checked')].map(e=>e.value),
-      special: document.getElementById('special').value
-    }
-  };
-  localStorage.setItem('storage_survey_latest', JSON.stringify(reportData));
-
-  // Generate Excel
-  const ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:14},{wch:26},{wch:30}];
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'收纳数据');
-  const wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'});
-  const blob=new Blob([wbout],{type:'application/octet-stream'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='收纳数据_'+nm+'.xlsx';a.click();
-
-  // Save to Supabase
-  try {
-    supabase.from('submissions').insert({
-      client_name: nm,
-      data: reportData
-    }).then();
-  } catch(e) {}
-
-  // Show thank you
-  document.querySelectorAll('section[id^="sec-"]').forEach(s=>{s.style.display='none'});
-  document.getElementById('topBar').classList.remove('show');
-  document.getElementById('ty').classList.add('show');
-}
-
-// ===== Init =====
-initDots();
-
-// ===== Supabase =====
-const SUPABASE_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-</script>
 </body>
 </html>

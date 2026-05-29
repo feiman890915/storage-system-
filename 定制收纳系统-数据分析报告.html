@@ -273,13 +273,18 @@ section{margin-bottom:20px}
 
 <button class="back-top no-print" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-// ===== Supabase =====
+// ===== Supabase (loads async) =====
 const SUPABASE_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-// ===== Data Loading =====
+let supabase = null;
+function initSupabase() {
+  if (typeof window.supabase !== 'undefined') {
+    try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn(e) }
+  }
+}
+initSupabase();
+document.addEventListener('DOMContentLoaded', initSupabase);
 const DATA_KEY = 'storage_survey_latest';
 let data = null;
 
@@ -299,6 +304,7 @@ function loadData() {
 
 async function fetchSupabaseList() {
   try {
+    if (!supabase) throw new Error('Supabase SDK 未加载');
     const { data: list, error } = await supabase
       .from('submissions')
       .select('id, client_name, created_at')
@@ -344,6 +350,7 @@ async function loadFromSupabase(id) {
   document.getElementById('emptyView').style.display = 'none';
   document.getElementById('loadingView').style.display = 'block';
   try {
+    if (!supabase) throw new Error('Supabase SDK 未加载');
     const { data: row, error } = await supabase
       .from('submissions')
       .select('data, client_name, created_at')
@@ -751,5 +758,6 @@ function backToList() {
 // ===== Init =====
 loadData();
 </script>
+<script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
 </body>
 </html>
