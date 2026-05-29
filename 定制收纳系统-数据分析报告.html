@@ -274,17 +274,10 @@ section{margin-bottom:20px}
 <button class="back-top no-print" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-// ===== Supabase (loads async) =====
-const SUPABASE_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
-let supabase = null;
-function initSupabase() {
-  if (typeof window.supabase !== 'undefined') {
-    try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn(e) }
-  }
-}
-initSupabase();
-document.addEventListener('DOMContentLoaded', initSupabase);
+// ===== Supabase REST API (no external SDK needed) =====
+const SB_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
+const SB_HEADERS = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' };
 const DATA_KEY = 'storage_survey_latest';
 let data = null;
 
@@ -304,13 +297,9 @@ function loadData() {
 
 async function fetchSupabaseList() {
   try {
-    if (!supabase) throw new Error('Supabase SDK 未加载');
-    const { data: list, error } = await supabase
-      .from('submissions')
-      .select('id, client_name, created_at')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
+    const res = await fetch(SB_URL + '/rest/v1/submissions?select=id,client_name,created_at&order=created_at.desc', { headers: SB_HEADERS });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const list = await res.json();
 
     document.getElementById('loadingView').style.display = 'none';
 
@@ -350,14 +339,10 @@ async function loadFromSupabase(id) {
   document.getElementById('emptyView').style.display = 'none';
   document.getElementById('loadingView').style.display = 'block';
   try {
-    if (!supabase) throw new Error('Supabase SDK 未加载');
-    const { data: row, error } = await supabase
-      .from('submissions')
-      .select('data, client_name, created_at')
-      .eq('id', id)
-      .single();
-
-    if (error) throw error;
+    const res = await fetch(SB_URL + '/rest/v1/submissions?select=data,client_name,created_at&id=eq.' + id, { headers: SB_HEADERS });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const rows = await res.json();
+    const row = rows && rows[0];
     if (row) {
       data = row.data;
       // Attach metadata for display
@@ -758,6 +743,5 @@ function backToList() {
 // ===== Init =====
 loadData();
 </script>
-<script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
 </body>
 </html>

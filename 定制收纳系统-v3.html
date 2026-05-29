@@ -418,15 +418,8 @@ function submitForm(){
 
   localStorage.setItem('storage_survey_latest', JSON.stringify(reportData));
 
-  // Save to Supabase (only if SDK loaded)
-  if (window._supabase) {
-    try {
-      window._supabase.from('submissions').insert({
-        client_name: nm,
-        data: reportData
-      }).then(r=>{if(r.error)console.warn('Supabase insert error:',r.error)});
-    } catch(e) { console.warn('Supabase error:', e) }
-  }
+  // Save to Supabase via REST API
+  saveToSupabase(nm, reportData);
 
   // Show thank you
   document.querySelectorAll('section.active').forEach(s=>s.classList.remove('active'));
@@ -437,22 +430,23 @@ function submitForm(){
 // ===== Init =====
 initDots();
 
-// ===== Supabase (loads async, init when ready) =====
-const SUPABASE_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
-function initSupabase() {
-  if (typeof window.supabase !== 'undefined') {
-    try {
-      window._supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    } catch(e) { console.warn('Supabase init error:', e) }
-  }
+// ===== Supabase REST API (no external SDK needed) =====
+const SB_URL = 'https://zjuspznhwtmqehjcrora.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdXNwem5od3RtcWVoamNyb3JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzkxMDUsImV4cCI6MjA5NTYxNTEwNX0.x5IbYW5db636lfEBDPYPTsFzfnLd9nDNpTTQv0X65R0';
+const SB_HEADERS = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+
+async function saveToSupabase(name, data) {
+  try {
+    const res = await fetch(SB_URL + '/rest/v1/submissions', {
+      method: 'POST',
+      headers: SB_HEADERS,
+      body: JSON.stringify({ client_name: name, data: data })
+    });
+    if (!res.ok) console.warn('Supabase save error:', res.status, await res.text().catch(()=>''));
+  } catch(e) { console.warn('Supabase save error:', e) }
 }
-// Try immediately and also after defer scripts load
-initSupabase();
-document.addEventListener('DOMContentLoaded', initSupabase);
 </script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
 </head>
 <body>
 
