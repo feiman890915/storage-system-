@@ -394,13 +394,6 @@ function submitForm(){
   const note=document.getElementById('noteNote');
   add('生活习惯','补充说明',note?note.value:null);
 
-  // Excel
-  const wb=XLSX.utils.book_new();
-  const ws=XLSX.utils.json_to_sheet(rows);
-  XLSX.utils.book_append_sheet(wb,ws,'客户数据');
-  XLSX.writeFile(wb,'收纳客户数据_'+nm+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
-
-  // Report data
   const reportData = {
     _name: nm,
     _phone: document.getElementById('phone').value,
@@ -446,7 +439,6 @@ async function saveToSupabase(name, data) {
   } catch(e) { console.warn('Supabase save error:', e) }
 }
 </script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
 </head>
 <body>
 
